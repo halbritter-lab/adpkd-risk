@@ -22,35 +22,45 @@
       acknowledged on this device at: {{ acknowledgmentTime }}.
     </div>
 
-    <!-- Input Section -->
+    <!-- Input Section (Split into two columns) -->
     <div class="controls" v-if="disclaimerAcknowledged && !showModal">
-      <div class="input-group">
-        <label for="age">Age [y]:</label>
-        <input type="number" v-model="age" min="20" max="80" placeholder="Enter age" />
-      </div>
+      <div class="form-columns">
+        <!-- Left column for MAYO score inputs -->
+        <div class="input-group-column">
+          <h3>MAYO Score Inputs</h3>
+          <div class="input-group">
+            <label for="age">Age [y]:</label>
+            <input type="number" v-model="age" min="20" max="80" placeholder="Enter age" />
+          </div>
 
-      <div class="input-group">
-        <label for="height">Height [cm]:</label>
-        <input type="number" v-model="height" min="100" max="250" placeholder="Enter height in cm" />
-      </div>
+          <div class="input-group">
+            <label for="height">Height [cm]:</label>
+            <input type="number" v-model="height" min="100" max="250" placeholder="Enter height in cm" />
+          </div>
 
-      <div class="input-group">
-        <label for="right-kidney">Right Kidney Volume [ml]:</label>
-        <input type="number" v-model="rightKidneyVolume" placeholder="Enter right kidney volume" />
-      </div>
+          <div class="input-group">
+            <label for="right-kidney">Right Kidney Volume [ml]:</label>
+            <input type="number" v-model="rightKidneyVolume" placeholder="Enter right kidney volume" />
+          </div>
 
-      <div class="input-group">
-        <label for="left-kidney">Left Kidney Volume [ml]:</label>
-        <input type="number" v-model="leftKidneyVolume" placeholder="Enter left kidney volume" />
-      </div>
+          <div class="input-group">
+            <label for="left-kidney">Left Kidney Volume [ml]:</label>
+            <input type="number" v-model="leftKidneyVolume" placeholder="Enter left kidney volume" />
+          </div>
+        </div>
 
-      <div class="input-group">
-        <label for="genotype">Genotype:</label>
-        <select v-model="genotype">
-          <option value="PKD1T">PKD1T</option>
-          <option value="PKD1NT">PKD1NT</option>
-          <option value="PKD2">PKD2</option>
-        </select>
+        <!-- Right column for PROPKD score inputs -->
+        <div class="input-group-column">
+          <h3>PROPKD Score Inputs</h3>
+          <div class="input-group">
+            <label for="genotype">Genotype:</label>
+            <select v-model="genotype">
+              <option value="PKD1T">PKD1T</option>
+              <option value="PKD1NT">PKD1NT</option>
+              <option value="PKD2">PKD2</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <!-- Buttons Section -->
@@ -115,6 +125,8 @@ export default {
         y: {
           beginAtZero: true,
           title: { display: true, text: 'Scores' },
+          min: 0,
+          max: 3000,
         },
       },
     });
@@ -180,17 +192,17 @@ export default {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
   text-align: center;
 }
 
-/* Move content to the top instead of vertically centering it */
+/* Keep the app container aligned to the top */
 #app {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Move to the top */
+  justify-content: flex-start; /* Align to the top */
   align-items: center;
   height: 100vh; /* Full height of viewport */
 }
@@ -208,6 +220,17 @@ export default {
 .app-version {
   font-size: 0.8em;
   color: #666;
+}
+
+/* Flexbox layout for two columns */
+.form-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.input-group-column {
+  flex: 1;
 }
 
 .input-group {

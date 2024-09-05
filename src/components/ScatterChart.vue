@@ -28,5 +28,8 @@ export default {
 </script>
 
 <style scoped>
-/* Add any styles specific to your chart component */
+div {
+  width: 100%;
+  height: 400px;
+}
 </style>
