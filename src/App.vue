@@ -20,11 +20,36 @@
       <v-container>
         <!-- Top Section: General Inputs -->
         <v-row>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="patientId" label="Patient ID" />
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" />
+          <v-col cols="12" md="12">
+            <!-- Patient Info Card -->
+            <v-card outlined class="pa-3 mb-5">
+              <v-card-title>Patient Information</v-card-title>
+              <v-card-text>
+                <v-row>
+                  <!-- Adjusted column width for Patient Info inputs -->
+                  <v-col cols="12" sm="4" md="3">
+                    <v-text-field v-model="patientId" label="Patient ID" />
+                  </v-col>
+                  <v-col cols="12" sm="4" md="3">
+                    <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" />
+                  </v-col>
+                  <v-col cols="12" sm="4" md="3">
+                    <v-select
+                      v-model="sex"
+                      :items="['Male', 'Female']"
+                      label="Sex"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="4" md="3">
+                    <v-select
+                      v-model="familyHistory"
+                      :items="['Positive', 'Negative']"
+                      label="Family History"
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
 
@@ -46,7 +71,7 @@
             </v-card>
           </v-col>
 
-          <!-- Right Section: PROPKD Score (Mutation Class) -->
+          <!-- Right Section: PROPKD Score (Mutation Class and other factors) -->
           <v-col cols="12" md="6">
             <v-card>
               <v-card-title>PROPKD Score Inputs</v-card-title>
@@ -56,7 +81,15 @@
                   :items="mutationClasses"
                   label="Mutation Class"
                 />
-                <v-btn disabled>Calculate PROPKD Score (Coming Soon)</v-btn>
+                <v-checkbox
+                  v-model="hypertension"
+                  label="Hypertension before age 35"
+                />
+                <v-checkbox
+                  v-model="firstUrologicalEvent"
+                  label="First urological event before age 35"
+                />
+                <v-btn @click="calculatePROPKDScore">Calculate PROPKD Score</v-btn>
               </v-card-text>
             </v-card>
           </v-col>
@@ -84,10 +117,16 @@ export default {
     return {
       patientId: null,
       age: null,
+      sex: null,
+      familyHistory: null,
       kidneyVolume: null,
       mutationClass: null,
+      hypertension: false,
+      firstUrologicalEvent: false,
       mutationClasses: [
-        'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'
+        'PKD2 mutation',
+        'Nontruncating PKD1 mutation',
+        'Truncating PKD1 mutation'
       ], // Mutation classes for the PROPKD score
       chartData: {
         datasets: [
@@ -118,9 +157,15 @@ export default {
         return;
       }
 
+      if (!this.patientId) {
+        alert('Please enter a valid Patient ID.');
+        return;
+      }
+
       const score = this.calculateMayoScore(this.age, this.kidneyVolume);
 
-      const newDataPoint = { x: this.age, y: score, patientId: this.patientId }; // Add patient ID here
+      // Include patientId in the data point
+      const newDataPoint = { x: this.age, y: score, patientId: this.patientId };
 
       // Update the chartData reactively
       this.chartData = {
@@ -132,6 +177,19 @@ export default {
           },
         ],
       };
+    },
+    calculatePROPKDScore() {
+      // Placeholder calculation for PROPKD score based on mutation class and factors
+      const mutationScore = this.mutationClass === 'PKD2 mutation' ? 0 :
+                            this.mutationClass === 'Nontruncating PKD1 mutation' ? 2 : 4;
+
+      const hypertensionScore = this.hypertension ? 2 : 0;
+      const urologicalEventScore = this.firstUrologicalEvent ? 2 : 0;
+      const sexScore = this.sex === 'Male' ? 1 : 0;
+
+      const totalScore = mutationScore + hypertensionScore + urologicalEventScore + sexScore;
+
+      alert(`PROPKD Score: ${totalScore}`);
     },
     calculateMayoScore(age, kidneyVolume) {
       // Placeholder calculation for Mayo score

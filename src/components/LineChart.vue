@@ -161,7 +161,7 @@ export default {
                 },
             },
             mode: 'nearest',
-            intersect: true, // Only show tooltips for points
+            intersect: true,
             filter: (tooltipItem) => {
                 // Only show tooltips for points, not for lines/areas
                 return tooltipItem.datasetIndex < props.chartData.datasets.length;
