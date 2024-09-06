@@ -13,10 +13,11 @@ import {
   LineElement,
   LinearScale,
   LogarithmicScale,
-  Title,
   CategoryScale,
+  Title,
   Tooltip,
   Legend,
+  Filler, // Import the Filler plugin
 } from 'chart.js';
 
 ChartJS.register(
@@ -28,7 +29,8 @@ ChartJS.register(
   CategoryScale,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler // Register the Filler plugin
 );
 
 export default {
@@ -39,7 +41,7 @@ export default {
     const canvas = ref(null);
     let chartInstance = null;
 
-    // Class line data extracted from Mayo classification chart
+    // Class line data extracted from Mayo classification chart with fill colors for each section
     const classificationData = [
       {
         label: 'Class 1A',
@@ -47,9 +49,12 @@ export default {
           { x: 15, y: 187.535 }, { x: 80, y: 493.599 }
         ],
         borderColor: '#00b050',
+        backgroundColor: 'rgba(0, 176, 80, 0.2)',  // Adding semi-transparent background color for the fill
         borderWidth: 2,
-        fill: false,
+        fill: 'origin', // Fill the area below the line
         showLine: true,
+        pointRadius: 0, // Disable points on the classification lines
+        hoverRadius: 0, // Disable hover effect on classification lines
       },
       {
         label: 'Class 1B',
@@ -57,9 +62,12 @@ export default {
           { x: 15, y: 233.695 }, { x: 80, y: 1596.134 }
         ],
         borderColor: '#ccff99',
+        backgroundColor: 'rgba(204, 255, 153, 0.2)',  // Semi-transparent yellow-green
         borderWidth: 2,
-        fill: false,
+        fill: '-1', // Fill the area between this line and the previous line (Class 1A)
         showLine: true,
+        pointRadius: 0,
+        hoverRadius: 0,
       },
       {
         label: 'Class 1C',
@@ -67,9 +75,12 @@ export default {
           { x: 15, y: 290.292 }, { x: 80, y: 5074.514 }
         ],
         borderColor: '#ffc000',
+        backgroundColor: 'rgba(255, 192, 0, 0.2)',  // Semi-transparent yellow
         borderWidth: 2,
-        fill: false,
+        fill: '-1', // Fill the area between this line and the previous line (Class 1B)
         showLine: true,
+        pointRadius: 0,
+        hoverRadius: 0,
       },
       {
         label: 'Class 1D',
@@ -77,9 +88,12 @@ export default {
           { x: 15, y: 359.484 }, { x: 80, y: 15869.399 }
         ],
         borderColor: '#ff6600',
+        backgroundColor: 'rgba(255, 102, 0, 0.2)',  // Semi-transparent orange
         borderWidth: 2,
-        fill: false,
+        fill: '-1', // Fill the area between this line and the previous line (Class 1C)
         showLine: true,
+        pointRadius: 0,
+        hoverRadius: 0,
       },
       {
         label: 'Class 1E',
@@ -87,9 +101,12 @@ export default {
           { x: 15, y: 100 }, { x: 80, y: 100 }
         ],
         borderColor: 'black',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',  // Semi-transparent black
         borderWidth: 2,
-        fill: false,
+        fill: '-1', // Fill the area between this line and the previous line (Class 1D)
         showLine: true,
+        pointRadius: 0,
+        hoverRadius: 0,
       },
     ];
 
@@ -101,7 +118,7 @@ export default {
           ...props.chartData,
           datasets: [
             ...props.chartData.datasets,
-            ...classificationData, // Adding the classification lines to the chart
+            ...classificationData, // Adding the classification lines and background colors
           ],
         },
         options: {
@@ -131,6 +148,27 @@ export default {
               },
             },
           },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+            },
+            tooltip: {
+              mode: 'nearest',
+              intersect: true, // Only show tooltips for points
+              filter: (tooltipItem) => {
+                // Only show tooltips for points, not for lines/areas
+                return tooltipItem.datasetIndex < props.chartData.datasets.length;
+              },
+            },
+            filler: {
+              propagate: true, // Enable filler for the chart
+            },
+          },
+          interaction: {
+            mode: 'nearest',
+            intersect: true, // Only interact with points, not the entire area
+          },
         },
       });
     };
@@ -142,7 +180,7 @@ export default {
         if (chartInstance) {
           chartInstance.data = {
             ...newData,
-            datasets: [...newData.datasets, ...classificationData], // Re-apply the classification lines
+            datasets: [...newData.datasets, ...classificationData], // Re-apply the classification lines and fills
           };
           chartInstance.update();
         }
