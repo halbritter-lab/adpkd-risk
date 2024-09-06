@@ -69,8 +69,8 @@
       </div>
     </div>
 
-    <!-- Chart Section -->
-    <div v-if="showChart" class="chart-container">
+    <!-- Chart Section (Always Visible) -->
+    <div class="chart-container">
       <ScatterChart :chartData="chartData" :chartOptions="chartOptions" />
     </div>
   </div>
@@ -90,14 +90,9 @@ export default {
     const rightKidneyVolume = ref(null);
     const leftKidneyVolume = ref(null);
     const genotype = ref(null);
-    const showChart = ref(false);
     const showModal = ref(true);
     const disclaimerAcknowledged = ref(false);
     const acknowledgmentTime = ref(null);
-
-    const isInvalidInput = computed(() => {
-      return age.value === null || height.value === null || rightKidneyVolume.value === null || leftKidneyVolume.value === null || !genotype.value;
-    });
 
     const chartData = ref({
       datasets: [
@@ -139,18 +134,36 @@ export default {
       return genotype.value === 'PKD1T' ? 9 : genotype.value === 'PKD1NT' ? 6 : 3;
     };
 
-    const calculateScores = () => {
+    // Function to update the chart based on user inputs
+    const updateChart = () => {
       const totalKidneyVolume = rightKidneyVolume.value + leftKidneyVolume.value;
+      if (!age.value || !height.value || !totalKidneyVolume) return;
+
       const heightInMeters = height.value / 100;
       const htTKV = totalKidneyVolume / heightInMeters;
 
       const mayoScore = calculateMAYOScore(htTKV, age.value);
       const propkdScore = calculatePROPKDScore();
 
-      chartData.value.datasets[0].data.push({ x: age.value, y: mayoScore });
-      chartData.value.datasets[1].data.push({ x: age.value, y: propkdScore });
+      // Replace the chartData object reference entirely to trigger reactivity
+      chartData.value = {
+        datasets: [
+          {
+            label: 'MAYO Score',
+            backgroundColor: 'blue',
+            data: [{ x: age.value, y: mayoScore }],
+          },
+          {
+            label: 'PROPKD Score',
+            backgroundColor: 'red',
+            data: [{ x: age.value, y: propkdScore }],
+          },
+        ],
+      };
+    };
 
-      showChart.value = true;
+    const calculateScores = () => {
+      updateChart(); // Updates the chart based on user input
     };
 
     const closeModal = () => {
@@ -165,22 +178,31 @@ export default {
       showModal.value = true;
     };
 
+    const isInvalidInput = computed(() => {
+      return (
+        age.value === null ||
+        height.value === null ||
+        rightKidneyVolume.value === null ||
+        leftKidneyVolume.value === null ||
+        !genotype.value
+      );
+    });
+
     return {
       age,
       height,
       rightKidneyVolume,
       leftKidneyVolume,
       genotype,
-      showChart,
       showModal,
       disclaimerAcknowledged,
       acknowledgmentTime,
-      isInvalidInput,
-      calculateScores,
       chartData,
       chartOptions,
+      calculateScores,
       closeModal,
       reopenModal,
+      isInvalidInput,
     };
   },
 };
