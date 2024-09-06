@@ -111,66 +111,72 @@ export default {
     ];
 
     const createChart = () => {
-      const ctx = canvas.value.getContext('2d');
-      chartInstance = new ChartJS(ctx, {
+    const ctx = canvas.value.getContext('2d');
+    chartInstance = new ChartJS(ctx, {
         type: 'scatter',
         data: {
-          ...props.chartData,
-          datasets: [
+        ...props.chartData,
+        datasets: [
             ...props.chartData.datasets,
             ...classificationData, // Adding the classification lines and background colors
-          ],
+        ],
         },
         options: {
-          scales: {
+        scales: {
             x: {
-              type: 'linear',
-              position: 'bottom',
-              min: 20,
-              max: 80,
-              title: {
+            type: 'linear',
+            position: 'bottom',
+            min: 20,
+            max: 80,
+            title: {
                 display: true,
                 text: 'Patient Age (Years)',
-              },
+            },
             },
             y: {
-              type: 'logarithmic', // Set Y-axis to logarithmic
-              min: 100,
-              max: 20000,
-              title: {
+            type: 'logarithmic', // Set Y-axis to logarithmic
+            min: 100,
+            max: 20000,
+            title: {
                 display: true,
                 text: 'HtTKV (mL/m)',
-              },
-              ticks: {
-                callback: function (value) {
-                  return value; // Format the ticks properly
-                },
-              },
             },
-          },
-          plugins: {
+            ticks: {
+                callback: function (value) {
+                return value; // Format the ticks properly
+                },
+            },
+            },
+        },
+        plugins: {
             legend: {
-              display: true,
-              position: 'top',
+            display: true,
+            position: 'top',
             },
             tooltip: {
-              mode: 'nearest',
-              intersect: true, // Only show tooltips for points
-              filter: (tooltipItem) => {
+            callbacks: {
+                label: function (context) {
+                const point = context.raw;
+                return `Patient ID: ${point.patientId}, Age: ${point.x}, Volume: ${point.y}`;
+                },
+            },
+            mode: 'nearest',
+            intersect: true, // Only show tooltips for points
+            filter: (tooltipItem) => {
                 // Only show tooltips for points, not for lines/areas
                 return tooltipItem.datasetIndex < props.chartData.datasets.length;
-              },
+            },
             },
             filler: {
-              propagate: true, // Enable filler for the chart
+            propagate: true, // Enable filler for the chart
             },
-          },
-          interaction: {
+        },
+        interaction: {
             mode: 'nearest',
             intersect: true, // Only interact with points, not the entire area
-          },
         },
-      });
+        },
+    });
     };
 
     // Watch for changes in the chartData prop and update the chart

@@ -120,7 +120,7 @@ export default {
 
       const score = this.calculateMayoScore(this.age, this.kidneyVolume);
 
-      const newDataPoint = { x: this.age, y: score };
+      const newDataPoint = { x: this.age, y: score, patientId: this.patientId }; // Add patient ID here
 
       // Update the chartData reactively
       this.chartData = {
