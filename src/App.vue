@@ -18,25 +18,53 @@
     <!-- Main Content -->
     <v-main>
       <v-container>
+        <!-- Top Section: General Inputs -->
         <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="patientId" label="Patient ID" />
+          </v-col>
           <v-col cols="12" md="6">
             <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" />
           </v-col>
+        </v-row>
+
+        <v-row>
+          <!-- Left Section: Mayo Score Inputs (Kidney Volumes) -->
           <v-col cols="12" md="6">
-            <v-text-field
-              v-model="kidneyVolume"
-              label="Kidney Volume (ml)"
-              type="number"
-              :min="0"
-              :max="20000"
-            />
+            <v-card>
+              <v-card-title>Mayo Score Inputs</v-card-title>
+              <v-card-text>
+                <v-text-field
+                  v-model="kidneyVolume"
+                  label="Kidney Volume (ml)"
+                  type="number"
+                  :min="0"
+                  :max="20000"
+                />
+                <v-btn @click="calculateScore">Calculate Mayo Score</v-btn>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <!-- Right Section: PROPKD Score (Mutation Class) -->
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-title>PROPKD Score Inputs</v-card-title>
+              <v-card-text>
+                <v-select
+                  v-model="mutationClass"
+                  :items="mutationClasses"
+                  label="Mutation Class"
+                />
+                <v-btn disabled>Calculate PROPKD Score (Coming Soon)</v-btn>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
-        <v-btn @click="calculateScore">Calculate Score</v-btn>
 
-        <!-- Chart (now with a max width) -->
-        <v-row justify="center">
-          <v-col cols="12" md="8">
+        <!-- Chart Section -->
+        <v-row justify="center" class="mt-5">
+          <v-col cols="12" md="10">
             <div class="chart-container">
               <LineChart :chartData="chartData" />
             </div>
@@ -54,8 +82,13 @@ export default {
   components: { LineChart },
   data() {
     return {
+      patientId: null,
       age: null,
       kidneyVolume: null,
+      mutationClass: null,
+      mutationClasses: [
+        'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'
+      ], // Mutation classes for the PROPKD score
       chartData: {
         datasets: [
           {
