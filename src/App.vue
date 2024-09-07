@@ -37,12 +37,12 @@
                   </v-col>
                   <!-- Ethnicity Select Input -->
                   <v-col cols="12" sm="2" md="2">
-                    <v-select 
-                      v-model="ethnicity" 
-                      :items="ethnicityOptions" 
-                      label="Ethnicity" 
-                      dense 
-                      outlined 
+                    <v-select
+                      v-model="ethnicity"
+                      :items="ethnicityOptions"
+                      label="Ethnicity"
+                      dense
+                      outlined
                     />
                   </v-col>
                 </v-row>
@@ -51,8 +51,9 @@
           </v-col>
         </v-row>
 
-        <!-- Mayo and PROPKD Score Section -->
+        <!-- Layout for Mayo/PROPKD inputs and charts -->
         <v-row>
+          <!-- Left Column: Mayo and PROPKD Inputs -->
           <v-col cols="12" md="6">
             <!-- Mayo Score Section -->
             <v-card outlined class="pa-2 mb-4">
@@ -102,18 +103,25 @@
             </v-card>
           </v-col>
 
-          <!-- Chart Section -->
+          <!-- Right Column: Mayo and PROPKD Charts -->
           <v-col cols="12" md="6">
-            <div class="chart-container">
-              <LineChart :chartData="chartData" />
-            </div>
-          </v-col>
-        </v-row>
+            <!-- Mayo Chart -->
+            <v-card outlined class="pa-2 mb-4">
+              <v-card-title>Mayo Chart</v-card-title>
+              <v-card-text>
+                <div class="chart-container">
+                  <LineChart :chartData="chartData" />
+                </div>
+              </v-card-text>
+            </v-card>
 
-        <!-- PROPKD Chart Section -->
-        <v-row>
-          <v-col cols="12">
-            <PROPKDChart :score="propkdScore" />
+            <!-- PROPKD Chart -->
+            <v-card outlined class="pa-2">
+              <v-card-title>PROPKD Chart</v-card-title>
+              <v-card-text>
+                <PROPKDChart :score="propkdScore" />
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
       </v-container>
