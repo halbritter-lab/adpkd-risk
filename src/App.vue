@@ -16,9 +16,9 @@
         <!-- Patient Information Section -->
         <v-row>
           <v-col cols="12" md="12">
-            <v-card outlined class="pa-2 mb-4">
+            <v-card outlined class="pa-1 mb-2">
               <v-card-title>Patient Information</v-card-title>
-              <v-card-text>
+              <v-card-text class="pa-1">
                 <v-row dense>
                   <v-col cols="12" sm="2" md="2">
                     <v-text-field v-model="patientId" label="Patient ID" dense outlined />
@@ -56,9 +56,9 @@
           <!-- Left Column: Mayo and PROPKD Inputs -->
           <v-col cols="12" md="6">
             <!-- Mayo Score Section -->
-            <v-card outlined class="pa-2 mb-4">
+            <v-card outlined class="pa-1 mb-2">
               <v-card-title>Mayo Score</v-card-title>
-              <v-card-text>
+              <v-card-text class="pa-1">
                 <v-select
                   v-model="inputMethod"
                   :items="['Ellipsoid Equation', 'Stereology Method']"
@@ -92,9 +92,9 @@
             </v-card>
 
             <!-- PROPKD Score Section -->
-            <v-card outlined class="pa-2">
-              <v-card-title>PROPKD Score Inputs</v-card-title>
-              <v-card-text>
+            <v-card outlined class="pa-1">
+              <v-card-title>PROPKD Score</v-card-title>
+              <v-card-text class="pa-1">
                 <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined />
                 <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined />
                 <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined />
@@ -106,9 +106,8 @@
           <!-- Right Column: Mayo and PROPKD Charts -->
           <v-col cols="12" md="6">
             <!-- Mayo Chart -->
-            <v-card outlined class="pa-2 mb-4">
-              <v-card-title>Mayo Chart</v-card-title>
-              <v-card-text>
+            <v-card outlined class="pa-1 mb-2">
+              <v-card-text class="pa-1">
                 <div class="chart-container">
                   <LineChart :chartData="chartData" />
                 </div>
@@ -116,9 +115,8 @@
             </v-card>
 
             <!-- PROPKD Chart -->
-            <v-card outlined class="pa-2">
-              <v-card-title>PROPKD Chart</v-card-title>
-              <v-card-text>
+            <v-card outlined class="pa-1">
+              <v-card-text class="pa-1">
                 <PROPKDChart :score="propkdScore" />
               </v-card-text>
             </v-card>
@@ -264,10 +262,10 @@ export default {
 
 /* Adjust inputs and padding */
 .v-card-text {
-  padding: 10px;
+  padding: 5px;
 }
 
 .v-text-field, .v-select, .v-checkbox {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 </style>

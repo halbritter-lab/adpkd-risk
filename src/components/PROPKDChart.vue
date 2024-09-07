@@ -1,6 +1,5 @@
 <template>
   <v-card outlined class="pa-4 mb-4">
-    <v-card-title>PROPKD Score Risk</v-card-title>
     <v-card-text>
       <v-row class="text-center" dense>
         <v-col
