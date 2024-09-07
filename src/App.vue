@@ -57,15 +57,19 @@
           <v-col cols="12" md="6">
             <!-- Mayo Score Section -->
             <v-card outlined class="pa-1 mb-2">
-              <v-card-title>Mayo Score</v-card-title>
-              <v-card-text class="pa-1">
+              <v-card-title class="d-flex justify-space-between align-center">
+                <span>Mayo Score</span>
                 <v-select
                   v-model="inputMethod"
                   :items="['Ellipsoid Equation', 'Stereology Method']"
-                  label="Input Method"
                   dense
                   outlined
+                  hide-details
+                  style="max-width: 250px;"
                 />
+                <v-btn small color="primary" @click="calculateHtTKV">Calculate</v-btn>
+              </v-card-title>
+              <v-card-text class="pa-1">
                 <template v-if="inputMethod === 'Ellipsoid Equation'">
                   <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined />
                   <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined />
@@ -87,18 +91,19 @@
                     outlined
                   />
                 </template>
-                <v-btn @click="calculateHtTKV" color="primary" class="mt-2">Calculate Mayo Score (HtTKV)</v-btn>
               </v-card-text>
             </v-card>
 
             <!-- PROPKD Score Section -->
             <v-card outlined class="pa-1">
-              <v-card-title>PROPKD Score</v-card-title>
+              <v-card-title class="d-flex justify-space-between">
+                PROPKD Score
+                <v-btn small color="primary" @click="calculatePROPKDScore">Calculate</v-btn>
+              </v-card-title>
               <v-card-text class="pa-1">
                 <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined />
                 <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined />
                 <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined />
-                <v-btn @click="calculatePROPKDScore" color="primary" class="mt-2">Calculate PROPKD Score</v-btn>
               </v-card-text>
             </v-card>
           </v-col>
