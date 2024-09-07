@@ -1,20 +1,19 @@
 <template>
-  <v-card outlined class="pa-4 mb-4">
-    <v-card-text>
-      <v-row class="text-center" dense>
-        <v-col
-          v-for="cell in scoreGrid"
-          :key="cell.value"
-          :class="['pa-4', getCellStyle(cell)]"
-          cols="1"
-        >
-          <div>{{ cell.value }}</div>
-          <div v-if="cell.label" class="font-weight-bold">{{ cell.label }}</div>
-          <div>{{ cell.description }}</div>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+  <v-row class="text-center" dense>
+    <v-col
+      v-for="cell in scoreGrid"
+      :key="cell.value"
+      :class="['pa-4', getCellStyle(cell)]"
+      cols="1"
+    >
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <div v-bind="attrs" v-on="on">{{ cell.value }}</div>
+        </template>
+        <span>{{ cell.label }}<br />{{ cell.description }}</span>
+      </v-tooltip>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
