@@ -6,12 +6,13 @@
       :class="['pa-4', getCellStyle(cell)]"
       cols="1"
     >
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <div v-bind="attrs" v-on="on">{{ cell.value }}</div>
-        </template>
-        <span>{{ cell.label }}<br />{{ cell.description }}</span>
-      </v-tooltip>
+          <div v-bind="attrs" v-on="on">
+            {{ cell.value }}
+            <v-tooltip
+                activator="parent"
+                location="top"
+            >{{ cell.label }}: {{ cell.description }}</v-tooltip>
+        </div>
     </v-col>
   </v-row>
 </template>
@@ -28,15 +29,15 @@ export default {
     return {
       scoreGrid: [
         { value: 0, label: 'LOW', description: '70.6 median age for ESRD onset' },
-        { value: 1, label: '', description: '' },
-        { value: 2, label: '', description: '' },
-        { value: 3, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
-        { value: 4, label: '', description: '' },
-        { value: 5, label: '', description: '' },
-        { value: 6, label: 'HIGH', description: '49 median age for ESRD onset' },
-        { value: 7, label: '', description: '' },
-        { value: 8, label: '', description: '' },
-        { value: 9, label: '', description: 'Risk of ESRD before 60' },
+        { value: 1, label: 'LOW', description: '70.6 median age for ESRD onset' },
+        { value: 2, label: 'LOW', description: '70.6 median age for ESRD onset' },
+        { value: 3, label: 'LOW', description: '70.6 median age for ESRD onset' },
+        { value: 4, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
+        { value: 5, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
+        { value: 6, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
+        { value: 7, label: 'HIGH', description: '49 median age for ESRD onset' },
+        { value: 8, label: 'HIGH', description: '49 median age for ESRD onset' },
+        { value: 9, label: 'HIGH', description: '49 median age for ESRD onset' },
       ],
     };
   },
