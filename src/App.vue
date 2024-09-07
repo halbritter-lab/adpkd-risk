@@ -35,6 +35,16 @@
                   <v-col cols="12" sm="2" md="2">
                     <v-select v-model="familyHistory" :items="['Positive', 'Negative']" label="Family History" dense outlined />
                   </v-col>
+                  <!-- Ethnicity Select Input -->
+                  <v-col cols="12" sm="2" md="2">
+                    <v-select 
+                      v-model="ethnicity" 
+                      :items="ethnicityOptions" 
+                      label="Ethnicity" 
+                      dense 
+                      outlined 
+                    />
+                  </v-col>
                 </v-row>
               </v-card-text>
             </v-card>
@@ -124,6 +134,7 @@ export default {
       height: 1.70, // Set default height in meters
       sex: null,
       familyHistory: null,
+      ethnicity: null, // New Ethnicity field
       kidneyVolume: null,
       inputMethod: 'Stereology Method',
       kidneyRight: {
@@ -146,6 +157,7 @@ export default {
         'Nontruncating PKD1 mutation',
         'Truncating PKD1 mutation',
       ],
+      ethnicityOptions: ['AA', 'O'], // Ethnicity options: AA for African American, O for Others
       chartData: {
         datasets: [
           {
