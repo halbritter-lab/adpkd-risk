@@ -1,50 +1,40 @@
 <template>
   <v-app :theme="isDark ? 'dark' : 'light'">
-    <!-- Top Toolbar with Title, Version, and Theme Toggle -->
     <v-toolbar color="secondary" dark>
       <v-toolbar-title class="d-flex align-center">
         <h1 class="mb-0">ADPKD Risk Calculator</h1>
         <span class="version">v0.1.0</span>
       </v-toolbar-title>
-
       <v-spacer></v-spacer>
-
-      <!-- Theme Toggle Button using Icon -->
       <v-btn icon @click="toggleTheme">
         <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
       </v-btn>
     </v-toolbar>
 
-    <!-- Main Content -->
     <v-main>
       <v-container>
-        <!-- Top Section: General Inputs -->
         <v-row>
           <v-col cols="12" md="12">
-            <!-- Patient Info Card -->
-            <v-card outlined class="pa-3 mb-5">
+            <v-card outlined class="pa-2 mb-4">
               <v-card-title>Patient Information</v-card-title>
               <v-card-text>
-                <v-row>
-                  <!-- Adjusted column width for Patient Info inputs -->
+                <v-row dense>
                   <v-col cols="12" sm="4" md="3">
-                    <v-text-field v-model="patientId" label="Patient ID" />
+                    <v-text-field v-model="patientId" label="Patient ID" dense outlined />
                   </v-col>
                   <v-col cols="12" sm="4" md="3">
-                    <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" />
+                    <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" dense outlined />
                   </v-col>
                   <v-col cols="12" sm="4" md="3">
-                    <v-select
-                      v-model="sex"
-                      :items="['Male', 'Female']"
-                      label="Sex"
-                    />
+                    <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" dense outlined />
                   </v-col>
                   <v-col cols="12" sm="4" md="3">
                     <v-select
                       v-model="familyHistory"
                       :items="['Positive', 'Negative']"
                       label="Family History"
+                      dense
+                      outlined
                     />
                   </v-col>
                 </v-row>
@@ -54,50 +44,62 @@
         </v-row>
 
         <v-row>
-          <!-- Left Section: Mayo Score Inputs (Kidney Volumes) -->
+          <!-- Left Section: Mayo Score and PROPKD Score -->
           <v-col cols="12" md="6">
-            <v-card>
-              <v-card-title>Mayo Score Inputs</v-card-title>
+            <!-- Mayo Score Section -->
+            <v-card outlined class="pa-2 mb-4">
+              <v-card-title>Mayo Score</v-card-title>
               <v-card-text>
-                <v-text-field
-                  v-model="kidneyVolume"
-                  label="Kidney Volume (ml)"
-                  type="number"
-                  :min="0"
-                  :max="20000"
+                <!-- Dropdown for selecting input method, default to Stereology Method -->
+                <v-select
+                  v-model="inputMethod"
+                  :items="['Ellipsoid Equation', 'Stereology Method']"
+                  label="Input Method"
+                  dense
+                  outlined
                 />
-                <v-btn @click="calculateScore">Calculate Mayo Score</v-btn>
+                <!-- Conditionally show inputs based on selected method -->
+                <template v-if="inputMethod === 'Ellipsoid Equation'">
+                  <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined />
+                  <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined />
+                  <v-text-field v-model="kidneyRight.width" label="Right Kidney Width (mm)" type="number" dense outlined />
+                  <v-text-field v-model="kidneyRight.depth" label="Right Kidney Depth (mm)" type="number" dense outlined />
+                  <v-text-field v-model="kidneyLeft.sagittal" label="Left Kidney Sagittal Length (mm)" type="number" dense outlined />
+                  <v-text-field v-model="kidneyLeft.coronal" label="Left Kidney Coronal Length (mm)" type="number" dense outlined />
+                  <v-text-field v-model="kidneyLeft.width" label="Left Kidney Width (mm)" type="number" dense outlined />
+                  <v-text-field v-model="kidneyLeft.depth" label="Left Kidney Depth (mm)" type="number" dense outlined />
+                </template>
+
+                <template v-else>
+                  <v-text-field
+                    v-model="kidneyVolume"
+                    label="Total Kidney Volume (mL)"
+                    type="number"
+                    :min="0"
+                    :max="20000"
+                    dense
+                    outlined
+                  />
+                </template>
+
+                <v-btn @click="calculateHtTKV" color="primary" class="mt-2">Calculate Mayo Score (HtTKV)</v-btn>
               </v-card-text>
             </v-card>
-          </v-col>
 
-          <!-- Right Section: PROPKD Score (Mutation Class and other factors) -->
-          <v-col cols="12" md="6">
-            <v-card>
+            <!-- PROPKD Score Section -->
+            <v-card outlined class="pa-2">
               <v-card-title>PROPKD Score Inputs</v-card-title>
               <v-card-text>
-                <v-select
-                  v-model="mutationClass"
-                  :items="mutationClasses"
-                  label="Mutation Class"
-                />
-                <v-checkbox
-                  v-model="hypertension"
-                  label="Hypertension before age 35"
-                />
-                <v-checkbox
-                  v-model="firstUrologicalEvent"
-                  label="First urological event before age 35"
-                />
-                <v-btn @click="calculatePROPKDScore">Calculate PROPKD Score</v-btn>
+                <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined />
+                <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined />
+                <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined />
+                <v-btn @click="calculatePROPKDScore" color="primary" class="mt-2">Calculate PROPKD Score</v-btn>
               </v-card-text>
             </v-card>
           </v-col>
-        </v-row>
 
-        <!-- Chart Section -->
-        <v-row justify="center" class="mt-5">
-          <v-col cols="12" md="10">
+          <!-- Right Section: Chart -->
+          <v-col cols="12" md="6">
             <div class="chart-container">
               <LineChart :chartData="chartData" />
             </div>
@@ -117,17 +119,29 @@ export default {
     return {
       patientId: null,
       age: null,
-      sex: null,
-      familyHistory: null,
+      height: null,
       kidneyVolume: null,
+      inputMethod: 'Stereology Method', // Default to Stereology Method
+      kidneyRight: {
+        sagittal: null,
+        coronal: null,
+        width: null,
+        depth: null,
+      },
+      kidneyLeft: {
+        sagittal: null,
+        coronal: null,
+        width: null,
+        depth: null,
+      },
       mutationClass: null,
       hypertension: false,
       firstUrologicalEvent: false,
       mutationClasses: [
         'PKD2 mutation',
         'Nontruncating PKD1 mutation',
-        'Truncating PKD1 mutation'
-      ], // Mutation classes for the PROPKD score
+        'Truncating PKD1 mutation',
+      ],
       chartData: {
         datasets: [
           {
@@ -138,36 +152,58 @@ export default {
           },
         ],
       },
-      isDark: true, // Default theme to dark
+      isDark: false, // Default to light theme
     };
   },
   methods: {
     toggleTheme() {
-      this.isDark = !this.isDark; // Toggle theme between dark and light
+      this.isDark = !this.isDark;
     },
-    calculateScore() {
-      // Validate inputs
-      if (!this.age || this.age < 20 || this.age > 80) {
-        alert('Please enter a valid age between 20 and 80.');
+    calculateHtTKV() {
+      if (!this.age || !this.height || this.height <= 0) {
+        alert('Please enter a valid age and height.');
         return;
       }
 
-      if (!this.kidneyVolume || this.kidneyVolume <= 0 || this.kidneyVolume > 20000) {
-        alert('Please enter a valid kidney volume between 0 and 20,000.');
-        return;
+      let totalVolume = 0;
+
+      if (this.inputMethod === 'Ellipsoid Equation') {
+        if (
+          !this.kidneyRight.sagittal ||
+          !this.kidneyRight.coronal ||
+          !this.kidneyRight.width ||
+          !this.kidneyRight.depth ||
+          !this.kidneyLeft.sagittal ||
+          !this.kidneyLeft.coronal ||
+          !this.kidneyLeft.width ||
+          !this.kidneyLeft.depth
+        ) {
+          alert('Please enter valid kidney dimensions.');
+          return;
+        }
+
+        const rightKidneyVolume =
+          (Math.PI / 6) *
+          ((this.kidneyRight.sagittal + this.kidneyRight.coronal) / 2) *
+          this.kidneyRight.width *
+          this.kidneyRight.depth;
+        const leftKidneyVolume =
+          (Math.PI / 6) *
+          ((this.kidneyLeft.sagittal + this.kidneyLeft.coronal) / 2) *
+          this.kidneyLeft.width *
+          this.kidneyLeft.depth;
+        totalVolume = rightKidneyVolume + leftKidneyVolume;
+      } else {
+        if (!this.kidneyVolume || this.kidneyVolume <= 0) {
+          alert('Please enter a valid kidney volume.');
+          return;
+        }
+        totalVolume = this.kidneyVolume;
       }
 
-      if (!this.patientId) {
-        alert('Please enter a valid Patient ID.');
-        return;
-      }
+      const htAdjustedTKV = totalVolume / this.height;
 
-      const score = this.calculateMayoScore(this.age, this.kidneyVolume);
-
-      // Include patientId in the data point
-      const newDataPoint = { x: this.age, y: score, patientId: this.patientId };
-
-      // Update the chartData reactively
+      const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId };
       this.chartData = {
         ...this.chartData,
         datasets: [
@@ -179,48 +215,31 @@ export default {
       };
     },
     calculatePROPKDScore() {
-      // Placeholder calculation for PROPKD score based on mutation class and factors
       const mutationScore = this.mutationClass === 'PKD2 mutation' ? 0 :
                             this.mutationClass === 'Nontruncating PKD1 mutation' ? 2 : 4;
 
       const hypertensionScore = this.hypertension ? 2 : 0;
       const urologicalEventScore = this.firstUrologicalEvent ? 2 : 0;
-      const sexScore = this.sex === 'Male' ? 1 : 0;
-
-      const totalScore = mutationScore + hypertensionScore + urologicalEventScore + sexScore;
+      const totalScore = mutationScore + hypertensionScore + urologicalEventScore;
 
       alert(`PROPKD Score: ${totalScore}`);
-    },
-    calculateMayoScore(age, kidneyVolume) {
-      // Placeholder calculation for Mayo score
-      return kidneyVolume;
     },
   },
 };
 </script>
 
 <style>
-/* Title and version styling within toolbar */
-.v-toolbar-title {
-  display: flex;
-  align-items: center;
-}
-
-h1 {
-  font-family: 'Roboto', sans-serif;
-  font-size: 1.5rem;
-  margin: 0;
-  padding-right: 10px;
-}
-
-.version {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* Max width for chart */
 .chart-container {
   max-width: 1000px;
   margin: 0 auto;
+}
+
+/* Adjust inputs and padding */
+.v-card-text {
+  padding: 10px;
+}
+
+.v-text-field, .v-select, .v-checkbox {
+  margin-bottom: 10px;
 }
 </style>
