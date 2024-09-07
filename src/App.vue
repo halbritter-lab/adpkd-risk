@@ -13,29 +13,27 @@
 
     <v-main>
       <v-container>
+        <!-- Patient Information Section -->
         <v-row>
           <v-col cols="12" md="12">
             <v-card outlined class="pa-2 mb-4">
               <v-card-title>Patient Information</v-card-title>
               <v-card-text>
                 <v-row dense>
-                  <v-col cols="12" sm="4" md="3">
+                  <v-col cols="12" sm="2" md="2">
                     <v-text-field v-model="patientId" label="Patient ID" dense outlined />
                   </v-col>
-                  <v-col cols="12" sm="4" md="3">
+                  <v-col cols="12" sm="2" md="2">
                     <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" dense outlined />
                   </v-col>
-                  <v-col cols="12" sm="4" md="3">
+                  <v-col cols="12" sm="2" md="2">
+                    <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1" dense outlined />
+                  </v-col>
+                  <v-col cols="12" sm="2" md="2">
                     <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" dense outlined />
                   </v-col>
-                  <v-col cols="12" sm="4" md="3">
-                    <v-select
-                      v-model="familyHistory"
-                      :items="['Positive', 'Negative']"
-                      label="Family History"
-                      dense
-                      outlined
-                    />
+                  <v-col cols="12" sm="2" md="2">
+                    <v-select v-model="familyHistory" :items="['Positive', 'Negative']" label="Family History" dense outlined />
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -43,14 +41,13 @@
           </v-col>
         </v-row>
 
+        <!-- Mayo and PROPKD Score Section -->
         <v-row>
-          <!-- Left Section: Mayo Score and PROPKD Score -->
           <v-col cols="12" md="6">
             <!-- Mayo Score Section -->
             <v-card outlined class="pa-2 mb-4">
               <v-card-title>Mayo Score</v-card-title>
               <v-card-text>
-                <!-- Dropdown for selecting input method, default to Stereology Method -->
                 <v-select
                   v-model="inputMethod"
                   :items="['Ellipsoid Equation', 'Stereology Method']"
@@ -58,7 +55,6 @@
                   dense
                   outlined
                 />
-                <!-- Conditionally show inputs based on selected method -->
                 <template v-if="inputMethod === 'Ellipsoid Equation'">
                   <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined />
                   <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined />
@@ -69,7 +65,6 @@
                   <v-text-field v-model="kidneyLeft.width" label="Left Kidney Width (mm)" type="number" dense outlined />
                   <v-text-field v-model="kidneyLeft.depth" label="Left Kidney Depth (mm)" type="number" dense outlined />
                 </template>
-
                 <template v-else>
                   <v-text-field
                     v-model="kidneyVolume"
@@ -81,7 +76,6 @@
                     outlined
                   />
                 </template>
-
                 <v-btn @click="calculateHtTKV" color="primary" class="mt-2">Calculate Mayo Score (HtTKV)</v-btn>
               </v-card-text>
             </v-card>
@@ -98,7 +92,7 @@
             </v-card>
           </v-col>
 
-          <!-- Right Section: Chart -->
+          <!-- Chart Section -->
           <v-col cols="12" md="6">
             <div class="chart-container">
               <LineChart :chartData="chartData" />
@@ -119,9 +113,11 @@ export default {
     return {
       patientId: null,
       age: null,
-      height: null,
+      height: 1.70, // Set default height in meters
+      sex: null,
+      familyHistory: null,
       kidneyVolume: null,
-      inputMethod: 'Stereology Method', // Default to Stereology Method
+      inputMethod: 'Stereology Method',
       kidneyRight: {
         sagittal: null,
         coronal: null,
@@ -145,10 +141,12 @@ export default {
       chartData: {
         datasets: [
           {
-            label: 'Kidney Volume vs Age',
+            label: 'Patient Data',
             data: [],
             borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            showLine: false,
+            pointRadius: 5,
           },
         ],
       },
@@ -201,18 +199,21 @@ export default {
         totalVolume = this.kidneyVolume;
       }
 
-      const htAdjustedTKV = totalVolume / this.height;
+      const htAdjustedTKV = totalVolume / this.height; // Use height in meters directly
 
       const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId };
-      this.chartData = {
-        ...this.chartData,
-        datasets: [
-          {
-            ...this.chartData.datasets[0],
-            data: [...this.chartData.datasets[0].data, newDataPoint],
-          },
-        ],
-      };
+
+      // Create a shallow copy of the dataset to avoid reactivity issues
+      const newChartData = { ...this.chartData };
+      newChartData.datasets = [
+        {
+          ...newChartData.datasets[0],
+          data: [...newChartData.datasets[0].data, newDataPoint], // Add new data point
+        },
+      ];
+
+      // Update the chartData with a new reference
+      this.chartData = newChartData;
     },
     calculatePROPKDScore() {
       const mutationScore = this.mutationClass === 'PKD2 mutation' ? 0 :
