@@ -99,6 +99,13 @@
             </div>
           </v-col>
         </v-row>
+
+        <!-- PROPKD Chart Section -->
+        <v-row>
+          <v-col cols="12">
+            <PROPKDChart :score="propkdScore" />
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
   </v-app>
@@ -106,9 +113,10 @@
 
 <script>
 import LineChart from './components/LineChart.vue';
+import PROPKDChart from './components/PROPKDChart.vue'; // Import the new component
 
 export default {
-  components: { LineChart },
+  components: { LineChart, PROPKDChart },
   data() {
     return {
       patientId: null,
@@ -151,6 +159,7 @@ export default {
         ],
       },
       isDark: false, // Default to light theme
+      propkdScore: 0, // Initialize the PROPKD score
     };
   },
   methods: {
@@ -221,9 +230,7 @@ export default {
 
       const hypertensionScore = this.hypertension ? 2 : 0;
       const urologicalEventScore = this.firstUrologicalEvent ? 2 : 0;
-      const totalScore = mutationScore + hypertensionScore + urologicalEventScore;
-
-      alert(`PROPKD Score: ${totalScore}`);
+      this.propkdScore = mutationScore + hypertensionScore + urologicalEventScore; // Calculate PROPKD Score
     },
   },
 };
