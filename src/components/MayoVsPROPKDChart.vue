@@ -84,9 +84,9 @@ export default {
           ctx.save();
 
           const colors = [
-            ['#BCE9F9', '#FFEFB2', '#FFCCCC'], // Row for low PROPKD
-            ['#D3F8D8', '#FFEFB2', '#FFCCCC'], // Row for intermediate PROPKD
-            ['#BCE9F9', '#FFEFB2', '#FFCCCC'], // Row for high PROPKD
+            ['#E0F0DD', '#CDEBEC', '#CBE4E9'], // Row for low PROPKD
+            ['#CDEBEC', '#F9F6CE', '#FCECD8'], // Row for intermediate PROPKD
+            ['#CBE4E9', '#FCECD8', '#FBCAC8'], // Row for high PROPKD
           ];
 
           for (let i = 0; i < 3; i++) {
