@@ -282,8 +282,9 @@ export default {
 
       const htAdjustedTKV = totalVolume / this.height;
 
+      // Clamp the Mayo score to ensure it's within the valid range (1 to 5)
       this.mayoClass = this.getMayoClass(htAdjustedTKV);
-      this.mayoScore = Number(htAdjustedTKV) || 1;  // Ensure mayoScore is numeric
+      this.mayoScore = Math.min(Math.max(htAdjustedTKV, 1), 5);  // Ensure Mayo Score is between 1 and 5
 
       const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId, mayoClass: this.mayoClass };
 
