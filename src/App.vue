@@ -457,4 +457,9 @@ export default {
   margin-right: 20px; /* Spacing between logo and title */
   animation: fadeIn 2s ease-out forwards;
 }
+
+/* Animation for the logo */
+.app-logo:hover {
+  animation: pulse 2s infinite;
+}
 </style>
