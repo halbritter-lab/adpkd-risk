@@ -4,11 +4,11 @@
       <img
         src="/logo.webp"
         alt="ADPKD-Risk Logo"
-        class="mx-3 app-logo"
+        class="mx-2 app-logo"
       >
-      <v-toolbar-title class="d-flex align-center">
+      <v-toolbar-title class="d-flex align-center mx-0">
         <h1 class="app-title">
-          ADPKD Risk Calculator
+          ADPKD Risk
           </h1>
          <span class="app-version">v{{ version }}</span>
       </v-toolbar-title>
@@ -444,7 +444,7 @@ export default {
 
 /* Styling for the application title */
 .app-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
   margin: 0; /* Removing default margin */
 }
