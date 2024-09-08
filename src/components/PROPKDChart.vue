@@ -1,18 +1,18 @@
 <template>
-  <v-row class="text-center" dense>
+  <v-row class="text-center justify-center" dense>
     <v-col
       v-for="cell in scoreGrid"
       :key="cell.value"
       :class="['pa-4', getCellStyle(cell)]"
+      class="grid-cell"
       cols="1"
     >
-          <div v-bind="attrs" v-on="on">
-            {{ cell.value }}
-            <v-tooltip
-                activator="parent"
-                location="top"
-            >{{ cell.label }}: {{ cell.description }}</v-tooltip>
-        </div>
+      <div v-bind="attrs" v-on="on">
+        {{ cell.value }}
+        <v-tooltip activator="parent" location="top">
+          {{ cell.label }}: {{ cell.description }}
+        </v-tooltip>
+      </div>
     </v-col>
   </v-row>
 </template>
@@ -58,6 +58,18 @@ export default {
 </script>
 
 <style scoped>
+.grid-cell {
+  flex-grow: 1;
+  flex-basis: 0;
+  max-width: 100%;
+}
+
+/* Ensures grid stretches fully */
+.v-row {
+  display: flex;
+  justify-content: center;
+}
+
 .low-risk {
   background-color: #ffe599;
   border: 1px solid #ccc;
@@ -79,5 +91,12 @@ export default {
   border: 2px solid #000;
   color: #000;
   font-weight: bold;
+}
+
+/* Make sure the grid cells are responsive */
+.grid-cell {
+  width: 100%;
+  max-width: 100px; /* Adjust this value based on the size you want for each cell */
+  text-align: center;
 }
 </style>
