@@ -10,19 +10,22 @@
       <!-- Reset Button -->
       <v-btn icon @click="resetForm">
         <v-icon>mdi-refresh</v-icon>
+        <v-tooltip activator="parent" location="bottom">
+          Reset Form
+        </v-tooltip>
       </v-btn>
 
       <!-- Theme Toggle Button -->
       <v-btn icon @click="toggleTheme">
         <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
+        <v-tooltip activator="parent" location="bottom">
+          {{ isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme' }}
+        </v-tooltip>
       </v-btn>
     </v-toolbar>
 
     <v-main>
       <v-container>
-        <v-alert v-if="errorMessage" type="error" outlined class="mb-3">
-          {{ errorMessage }}
-        </v-alert>
 
         <!-- Step 1: Patient Information Section -->
         <v-row>
@@ -38,7 +41,16 @@
                     <v-text-field v-model="patientId" label="Patient ID" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" required dense outlined density="compact" />
+                    <v-text-field
+                      v-model="age"
+                      label="Age"
+                      type="number"
+                      :rules="ageRules"
+                      dense
+                      outlined
+                      density="compact"
+                      required
+                    />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1.4" :max="2.4" required dense outlined density="compact" />
@@ -173,6 +185,11 @@
             </v-card>
           </v-col>
         </v-row>
+
+        <!-- Moved the Alert to the Bottom -->
+        <v-alert v-if="errorMessage" type="error" outlined class="mt-3">
+          {{ errorMessage }}
+        </v-alert>
       </v-container>
     </v-main>
   </v-app>
@@ -234,6 +251,10 @@ export default {
       propkdScore: 0,
       mayoClass: 'low',
       errorMessage: null, // To display validation errors
+      ageRules: [
+        v => !!v || 'Age is required',
+        v => (v >= 20 && v <= 80) || 'Age must be between 20 and 80',
+      ],
     };
   },
   computed: {
@@ -373,7 +394,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .chart-container {
   max-width: 1000px;
   margin: 0 auto;
