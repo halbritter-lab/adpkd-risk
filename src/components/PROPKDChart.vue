@@ -45,7 +45,7 @@ export default {
     getCellStyle(cell) {
       if (cell.value === this.score) {
         return 'highlight-cell'; // Highlight style for current score
-      } else if (cell.value <= 2) {
+      } else if (cell.value <= 3) {
         return 'low-risk';
       } else if (cell.value >= 3 && cell.value <= 6) {
         return 'intermediate-risk';
