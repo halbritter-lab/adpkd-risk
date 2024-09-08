@@ -135,7 +135,7 @@
             <v-card outlined class="pa-2 mb-2">
               <v-tabs v-model="selectedTab" align-tabs="center">
                 <v-tab value="mayoPropkd">Mayo and PROPKD</v-tab>
-                <v-tab value="mayoVsPropkd">Mayo vs PROPKD</v-tab>
+                <v-tab value="mayoVsPropkd" :disabled="!isMayoScoreCalculated || !isPROPKDScoreCalculated">Mayo vs PROPKD</v-tab>
               </v-tabs>
 
               <v-tabs-window v-model="selectedTab">
