@@ -2,7 +2,7 @@
   <v-app :theme="isDark ? 'dark' : 'light'">
     <v-toolbar color="secondary" dark>
       <v-toolbar-title class="d-flex align-center">
-        <h1 class="mb-0">ADPKD Risk Calculator</h1>
+        <h2 class="mb-0">ADPKD Risk Calculator</h2>
         <span class="version">v0.1.0</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
