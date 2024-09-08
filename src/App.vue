@@ -71,14 +71,22 @@
               </v-card-title>
               <v-card-text class="pa-1">
                 <template v-if="inputMethod === 'Ellipsoid Equation'">
-                  <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined />
-                  <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined />
-                  <v-text-field v-model="kidneyRight.width" label="Right Kidney Width (mm)" type="number" dense outlined />
-                  <v-text-field v-model="kidneyRight.depth" label="Right Kidney Depth (mm)" type="number" dense outlined />
-                  <v-text-field v-model="kidneyLeft.sagittal" label="Left Kidney Sagittal Length (mm)" type="number" dense outlined />
-                  <v-text-field v-model="kidneyLeft.coronal" label="Left Kidney Coronal Length (mm)" type="number" dense outlined />
-                  <v-text-field v-model="kidneyLeft.width" label="Left Kidney Width (mm)" type="number" dense outlined />
-                  <v-text-field v-model="kidneyLeft.depth" label="Left Kidney Depth (mm)" type="number" dense outlined />
+                  <v-row dense>
+                    <v-col cols="6">
+                      <!-- Left Kidney Inputs -->
+                      <v-text-field v-model="kidneyLeft.sagittal" label="Left Kidney Sagittal Length (mm)" type="number" dense outlined />
+                      <v-text-field v-model="kidneyLeft.coronal" label="Left Kidney Coronal Length (mm)" type="number" dense outlined />
+                      <v-text-field v-model="kidneyLeft.width" label="Left Kidney Width (mm)" type="number" dense outlined />
+                      <v-text-field v-model="kidneyLeft.depth" label="Left Kidney Depth (mm)" type="number" dense outlined />
+                    </v-col>
+                    <v-col cols="6">
+                      <!-- Right Kidney Inputs -->
+                      <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined />
+                      <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined />
+                      <v-text-field v-model="kidneyRight.width" label="Right Kidney Width (mm)" type="number" dense outlined />
+                      <v-text-field v-model="kidneyRight.depth" label="Right Kidney Depth (mm)" type="number" dense outlined />
+                    </v-col>
+                  </v-row>
                 </template>
                 <template v-else>
                   <v-text-field
