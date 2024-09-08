@@ -34,13 +34,15 @@
     <v-main>
       <v-container>
 
-        <!-- Step 1: Patient Information Section -->
+        <!-- Step 1: Individual Information Section -->
         <v-row>
           <v-col cols="12" md="12">
             <v-card outlined class="pa-1 mb-2">
               <v-card-title>
-                <v-icon :color="isStep1Valid ? 'green' : 'red'" class="mr-2">mdi-numeric-1-circle-outline</v-icon>
-                Patient Information
+                <span>
+                  <v-icon :color="isStep1Valid ? 'green' : 'red'" class="mr-2">mdi-numeric-1-circle-outline</v-icon>
+                  Individual
+                </span>
               </v-card-title>
               <v-card-text class="pa-1">
                 <v-row dense>
@@ -90,17 +92,19 @@
             <!-- Mayo Score Section -->
             <v-card class="equal-height-card pa-1 mb-2" outlined>
               <v-card-title class="d-flex justify-space-between align-center">
-                <v-icon :color="isMayoScoreCalculated ? 'green' : 'red'" class="mr-2">mdi-numeric-2-circle-outline</v-icon>
-                Mayo Score
-                <v-select
-                  v-model="inputMethod"
-                  :items="['Ellipsoid Equation', 'Stereology Method']"
-                  dense
-                  outlined
-                  hide-details
-                  style="max-width: 250px;"
-                  density="compact"
-                />
+                <span>
+                  <v-icon :color="isMayoScoreCalculated ? 'green' : 'red'" class="mr-2">mdi-numeric-2-circle-outline</v-icon>
+                  Mayo
+                </span>
+                  <v-select
+                    v-model="inputMethod"
+                    :items="['Ellipsoid Equation', 'Stereology Method']"
+                    dense
+                    outlined
+                    hide-details
+                    style="max-width: 250px;"
+                    density="compact"
+                  />
                 <v-btn small color="primary" @click="calculateHtTKV" density="compact">Calculate</v-btn>
               </v-card-title>
               <v-card-text class="pa-1">
@@ -138,8 +142,10 @@
             <!-- PROPKD Score Section -->
             <v-card class="small-card pa-1" outlined>
               <v-card-title class="d-flex justify-space-between">
-                <v-icon :color="isPROPKDScoreCalculated ? 'green' : 'red'" class="mr-2">mdi-numeric-3-circle-outline</v-icon>
-                PROPKD Score
+                <span>
+                  <v-icon :color="isPROPKDScoreCalculated ? 'green' : 'red'" class="mr-2">mdi-numeric-3-circle-outline</v-icon>
+                  PROPKD
+                </span>
                 <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
               </v-card-title>
               <v-card-text class="pa-1">
