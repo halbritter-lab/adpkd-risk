@@ -2,8 +2,8 @@
   <v-app :theme="isDark ? 'dark' : 'light'">
     <v-toolbar color="secondary" dark>
       <v-toolbar-title class="d-flex align-center">
-        <h2 class="mb-0">ADPKD Risk Calculator</h2>
-        <span class="version">v0.1.0</span>
+        <h1 class="app-title">ADPKD Risk Calculator</h1>
+         <span class="app-version">v{{ version }}</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
@@ -196,6 +196,7 @@
 </template>
 
 <script>
+import packageInfo from '../package.json'; // Import the package.json file
 import LineChart from './components/LineChart.vue';
 import PROPKDChart from './components/PROPKDChart.vue';
 import MayoVsPROPKDChart from './components/MayoVsPROPKDChart.vue';
@@ -204,6 +205,7 @@ export default {
   components: { LineChart, PROPKDChart, MayoVsPROPKDChart },
   data() {
     return {
+      version: packageInfo.version, // Load version from package.json
       selectedTab: 'mayoPropkd',
       patientId: null,
       age: null,
@@ -425,5 +427,20 @@ export default {
 
 .small-card .v-select, .small-card .v-checkbox {
   margin-bottom: 4px;
+}
+
+/* Styling for the application title */
+.app-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0; /* Removing default margin */
+}
+
+/* Styles for the version number */
+.app-version {
+  font-size: 0.8em; /* Smaller font size */
+  color: #666; /* Lighter text color */
+  font-weight: normal; /* Less emphasis compared to the title */
+  padding-left: 10px; /* Space between title and version number */
 }
 </style>
