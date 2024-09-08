@@ -158,7 +158,7 @@
                 <v-tabs-window-item value="mayoVsPropkd">
                   <v-card outlined>
                     <v-card-text>
-                      <MayoVsPROPKDChart :mayoScore="mayoClass" :propkdScore="propkdScore" />
+                      <MayoVsPROPKDChart :mayoScore="mayoScore" :propkdScore="propkdScore" />
                     </v-card-text>
                   </v-card>
                 </v-tabs-window-item>
@@ -223,8 +223,9 @@ export default {
         ],
       },
       isDark: false,
+      mayoScore: null,  // Add mayoScore definition here
       propkdScore: 0,
-      mayoClass: 'low', // Define mayoClass for risk
+      mayoClass: 'low',
     };
   },
   methods: {
@@ -282,6 +283,7 @@ export default {
       const htAdjustedTKV = totalVolume / this.height;
 
       this.mayoClass = this.getMayoClass(htAdjustedTKV);
+      this.mayoScore = htAdjustedTKV;  // Define mayoScore based on calculation
 
       const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId, mayoClass: this.mayoClass };
 

@@ -29,8 +29,14 @@ ChartJS.register(
 
 export default {
   props: {
-    mayoScore: Number,
-    propkdScore: Number,
+    mayoScore: {
+      type: Number,
+      default: 1, // Default Mayo Score if not passed
+    },
+    propkdScore: {
+      type: Number,
+      default: 0, // Default PROPKD Score if not passed
+    },
   },
   setup(props) {
     const canvas = ref(null);
@@ -38,12 +44,22 @@ export default {
 
     // Mapping Mayo and PROPKD scores to risk categories
     const mayoToRisk = (mayoScore) => {
+      // Validate mayoScore; if it's invalid, fallback to default
+      if (typeof mayoScore !== 'number' || mayoScore < 1 || mayoScore > 5) {
+        mayoScore = 1; // Default to low risk if invalid
+      }
+
       if (mayoScore === 1 || mayoScore === 2) return 'low';
       if (mayoScore === 3) return 'intermediate';
       return 'high';
     };
 
     const propkdToRisk = (propkdScore) => {
+      // Validate propkdScore; if it's invalid, fallback to default
+      if (typeof propkdScore !== 'number' || propkdScore < 0 || propkdScore > 9) {
+        propkdScore = 0; // Default to low risk if invalid
+      }
+
       if (propkdScore >= 0 && propkdScore <= 3) return 'low';
       if (propkdScore >= 4 && propkdScore <= 6) return 'intermediate';
       return 'high';
@@ -52,6 +68,8 @@ export default {
     // Create the chart
     const createChart = () => {
       const ctx = canvas.value.getContext('2d');
+
+      // Use validated props for Mayo and PROPKD scores
       const mayoRisk = mayoToRisk(props.mayoScore);
       const propkdRisk = propkdToRisk(props.propkdScore);
 
