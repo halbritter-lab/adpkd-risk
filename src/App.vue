@@ -158,7 +158,7 @@
                 <v-tabs-window-item value="mayoVsPropkd">
                   <v-card outlined>
                     <v-card-text>
-                      Mayo vs PROPKD chart coming soon...
+                      <MayoVsPROPKDChart :mayoScore="mayoClass" :propkdScore="propkdScore" />
                     </v-card-text>
                   </v-card>
                 </v-tabs-window-item>
@@ -174,9 +174,10 @@
 <script>
 import LineChart from './components/LineChart.vue';
 import PROPKDChart from './components/PROPKDChart.vue';
+import MayoVsPROPKDChart from './components/MayoVsPROPKDChart.vue';
 
 export default {
-  components: { LineChart, PROPKDChart },
+  components: { LineChart, PROPKDChart, MayoVsPROPKDChart },
   data() {
     return {
       selectedTab: 'mayoPropkd',
@@ -223,11 +224,18 @@ export default {
       },
       isDark: false,
       propkdScore: 0,
+      mayoClass: 'low', // Define mayoClass for risk
     };
   },
   methods: {
     toggleTheme() {
       this.isDark = !this.isDark;
+    },
+    getMayoClass(volume) {
+      if (volume < 233.695) return 'low';
+      if (volume < 290.292) return 'intermediate';
+      if (volume < 359.484) return 'high';
+      return 'very high';
     },
     calculateHtTKV() {
       if (!this.age || !this.height || this.height <= 0) {
@@ -273,7 +281,9 @@ export default {
 
       const htAdjustedTKV = totalVolume / this.height;
 
-      const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId };
+      this.mayoClass = this.getMayoClass(htAdjustedTKV);
+
+      const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId, mayoClass: this.mayoClass };
 
       const newChartData = { ...this.chartData };
       newChartData.datasets = [

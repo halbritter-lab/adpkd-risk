@@ -53,7 +53,6 @@ export default {
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
-        classLabel: '1A',
       },
       {
         label: 'Class 1B',
@@ -65,7 +64,6 @@ export default {
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
-        classLabel: '1B',
       },
       {
         label: 'Class 1C',
@@ -77,7 +75,6 @@ export default {
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
-        classLabel: '1C',
       },
       {
         label: 'Class 1D',
@@ -89,7 +86,6 @@ export default {
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
-        classLabel: '1D',
       },
       {
         label: 'Class 1E',
@@ -101,17 +97,8 @@ export default {
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
-        classLabel: '1E',
       },
     ];
-
-    const getMayoClass = (yValue) => {
-      if (yValue < 233.695) return '1A';
-      if (yValue < 290.292) return '1B';
-      if (yValue < 359.484) return '1C';
-      if (yValue < 15869.399) return '1D';
-      return '1E';
-    };
 
     const createChart = () => {
       const ctx = canvas.value.getContext('2d');
@@ -158,8 +145,8 @@ export default {
               callbacks: {
                 label: function (context) {
                   const point = context.raw;
-                  const mayoClass = getMayoClass(point.y);
-                  return `Patient ID: ${point.patientId}, Age: ${point.x}, Volume: ${point.y}, Mayo Class: ${mayoClass}`;
+                  // Access mayoClass from point data, which you passed from App.vue
+                  return `Patient ID: ${point.patientId}, Age: ${point.x}, Volume: ${point.y}, Mayo Class: ${point.mayoClass}`;
                 },
               },
               mode: 'nearest',
