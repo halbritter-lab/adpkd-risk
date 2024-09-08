@@ -1,8 +1,15 @@
 <template>
   <v-app :theme="isDark ? 'dark' : 'light'">
     <v-toolbar color="secondary" dark>
+      <img
+        src="../logo.webp"
+        alt="ADPKD-Risk Logo"
+        class="mx-3 app-logo"
+      >
       <v-toolbar-title class="d-flex align-center">
-        <h1 class="app-title">ADPKD Risk Calculator</h1>
+        <h1 class="app-title">
+          ADPKD Risk Calculator
+          </h1>
          <span class="app-version">v{{ version }}</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -442,5 +449,12 @@ export default {
   color: #666; /* Lighter text color */
   font-weight: normal; /* Less emphasis compared to the title */
   padding-left: 10px; /* Space between title and version number */
+}
+
+/* Styles for the application logo */
+.app-logo {
+  max-width: 48px; /* Fixed maximum width */
+  margin-right: 20px; /* Spacing between logo and title */
+  animation: fadeIn 2s ease-out forwards;
 }
 </style>
