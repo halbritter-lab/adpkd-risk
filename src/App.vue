@@ -57,7 +57,7 @@
           <!-- Left Column: Mayo and PROPKD Inputs -->
           <v-col cols="12" md="6">
             <!-- Mayo Score Section -->
-            <v-card outlined class="pa-1 mb-2">
+            <v-card class="equal-height-card pa-1 mb-2" outlined>
               <v-card-title class="d-flex justify-space-between align-center">
                 <span>Mayo Score</span>
                 <v-select
@@ -105,30 +105,30 @@
               </v-card-text>
             </v-card>
 
-            <!-- PROPKD Score Section -->
-            <v-card outlined class="pa-1">
-              <v-card-title class="d-flex justify-space-between">
-                PROPKD Score
-                <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
-              </v-card-title>
-              <v-card-text class="pa-1">
-                <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined density="compact" />
-                <v-row dense>
-                  <v-col cols="6">
-                    <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined density="compact" />
-                  </v-col>
-                  <v-col cols="6">
-                    <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined density="compact" />
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
+          <!-- PROPKD Score Section -->
+          <v-card class="small-card pa-1" outlined>
+            <v-card-title class="d-flex justify-space-between">
+              PROPKD Score
+              <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
+            </v-card-title>
+            <v-card-text class="pa-1">
+              <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined density="compact" />
+              <v-row dense>
+                <v-col cols="6">
+                  <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined density="compact" />
+                </v-col>
+                <v-col cols="6">
+                  <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined density="compact" />
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
           </v-col>
 
           <!-- Right Column: Mayo and PROPKD Charts -->
           <v-col cols="12" md="6">
             <!-- Mayo Chart -->
-            <v-card outlined class="pa-1 mb-2">
+            <v-card class="equal-height-card pa-1 mb-2" outlined>
               <v-card-text class="pa-1">
                 <div class="chart-container">
                   <LineChart :chartData="chartData" />
@@ -137,7 +137,7 @@
             </v-card>
 
             <!-- PROPKD Chart -->
-            <v-card outlined class="pa-1">
+            <v-card class="small-card pa-1" outlined>
               <v-card-text class="pa-1">
                 <PROPKDChart :score="propkdScore" />
               </v-card-text>
@@ -290,4 +290,27 @@ export default {
 .v-text-field, .v-select, .v-checkbox {
   margin-bottom: 5px;
 }
+
+/* Equal height class for cards */
+.equal-height-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 450px;
+}
+
+/* Smaller card for PROPKD */
+.small-card {
+  min-height: 200px; /* Reduce the min-height for the card */
+}
+
+/* Adjust padding and layout inside the PROPKD card */
+.small-card .v-card-text {
+  padding: 8px; /* Reduce padding inside the card */
+}
+
+.small-card .v-select, .small-card .v-checkbox {
+  margin-bottom: 4px; /* Tighten spacing between inputs */
+}
+
 </style>
