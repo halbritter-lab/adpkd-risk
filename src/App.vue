@@ -18,7 +18,7 @@
           <v-col cols="12" md="12">
             <v-card outlined class="pa-1 mb-2">
               <v-card-title>
-                <v-icon class="mr-2">mdi-numeric-1-circle-outline</v-icon> 
+                <v-icon class="mr-2">mdi-numeric-1-circle-outline</v-icon>
                 Patient Information
               </v-card-title>
               <v-card-text class="pa-1">
@@ -38,7 +38,6 @@
                   <v-col cols="12" sm="2" md="2">
                     <v-select v-model="familyHistory" :items="['Positive', 'Negative']" label="Family History" dense outlined density="compact" />
                   </v-col>
-                  <!-- Ethnicity Select Input -->
                   <v-col cols="12" sm="2" md="2">
                     <v-select
                       v-model="ethnicity"
@@ -55,9 +54,8 @@
           </v-col>
         </v-row>
 
-         <!-- Step 2: Mayo and PROPKD Inputs -->
+        <!-- Step 2: Mayo and PROPKD Inputs -->
         <v-row>
-          <!-- Left Column: Mayo and PROPKD Inputs -->
           <v-col cols="12" md="6">
             <!-- Mayo Score Section -->
             <v-card class="equal-height-card pa-1 mb-2" outlined>
@@ -81,14 +79,12 @@
                 <template v-if="inputMethod === 'Ellipsoid Equation'">
                   <v-row dense>
                     <v-col cols="6">
-                      <!-- Left Kidney Inputs -->
                       <v-text-field v-model="kidneyLeft.sagittal" label="Left Kidney Sagittal Length (mm)" type="number" dense outlined density="compact" />
                       <v-text-field v-model="kidneyLeft.coronal" label="Left Kidney Coronal Length (mm)" type="number" dense outlined density="compact" />
                       <v-text-field v-model="kidneyLeft.width" label="Left Kidney Width (mm)" type="number" dense outlined density="compact" />
                       <v-text-field v-model="kidneyLeft.depth" label="Left Kidney Depth (mm)" type="number" dense outlined density="compact" />
                     </v-col>
                     <v-col cols="6">
-                      <!-- Right Kidney Inputs -->
                       <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined density="compact" />
                       <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined density="compact" />
                       <v-text-field v-model="kidneyRight.width" label="Right Kidney Width (mm)" type="number" dense outlined density="compact" />
@@ -111,45 +107,62 @@
               </v-card-text>
             </v-card>
 
-          <!-- Step 3: PROPKD Score Section -->
-          <v-card class="small-card pa-1" outlined>
-            <v-card-title class="d-flex justify-space-between">
-              <span>
-                <v-icon class="mr-2">mdi-numeric-3-circle-outline</v-icon>
-                PROPKD Score
-              </span>
-              <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
-            </v-card-title>
-            <v-card-text class="pa-1">
-              <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined density="compact" />
-              <v-row dense>
-                <v-col cols="6">
-                  <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined density="compact" />
-                </v-col>
-                <v-col cols="6">
-                  <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined density="compact" />
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-          </v-col>
-
-          <!-- Right Column: Mayo and PROPKD Charts -->
-          <v-col cols="12" md="6">
-            <!-- Mayo Chart -->
-            <v-card class="equal-height-card pa-1 mb-2" outlined>
+            <!-- PROPKD Score Section -->
+            <v-card class="small-card pa-1" outlined>
+              <v-card-title class="d-flex justify-space-between">
+                <span>
+                  <v-icon class="mr-2">mdi-numeric-3-circle-outline</v-icon>
+                  PROPKD Score
+                </span>
+                <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
+              </v-card-title>
               <v-card-text class="pa-1">
-                <div class="chart-container">
-                  <LineChart :chartData="chartData" />
-                </div>
+                <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined density="compact" />
+                <v-row dense>
+                  <v-col cols="6">
+                    <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined density="compact" />
+                  </v-col>
+                  <v-col cols="6">
+                    <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined density="compact" />
+                  </v-col>
+                </v-row>
               </v-card-text>
             </v-card>
+          </v-col>
 
-            <!-- PROPKD Chart -->
-            <v-card class="small-card pa-1" outlined>
-              <v-card-text class="pa-1">
-                <PROPKDChart :score="propkdScore" />
-              </v-card-text>
+          <!-- Right Column: Mayo and PROPKD Charts in Tabs (with cards) -->
+          <v-col cols="12" md="6">
+            <v-card outlined class="pa-2 mb-2">
+              <v-tabs v-model="selectedTab" align-tabs="center">
+                <v-tab value="mayoPropkd">Mayo and PROPKD</v-tab>
+                <v-tab value="mayoVsPropkd">Mayo vs PROPKD</v-tab>
+              </v-tabs>
+
+              <v-tabs-window v-model="selectedTab">
+                <v-tabs-window-item value="mayoPropkd">
+                  <v-card class="equal-height-card pa-1 mb-2" outlined>
+                    <v-card-text class="pa-1">
+                      <div class="chart-container">
+                        <LineChart :chartData="chartData" />
+                      </div>
+                    </v-card-text>
+                  </v-card>
+
+                  <v-card class="small-card pa-1" outlined>
+                    <v-card-text class="pa-1">
+                      <PROPKDChart :score="propkdScore" />
+                    </v-card-text>
+                  </v-card>
+                </v-tabs-window-item>
+
+                <v-tabs-window-item value="mayoVsPropkd">
+                  <v-card outlined>
+                    <v-card-text>
+                      Mayo vs PROPKD chart coming soon...
+                    </v-card-text>
+                  </v-card>
+                </v-tabs-window-item>
+              </v-tabs-window>
             </v-card>
           </v-col>
         </v-row>
@@ -160,18 +173,19 @@
 
 <script>
 import LineChart from './components/LineChart.vue';
-import PROPKDChart from './components/PROPKDChart.vue'; // Import the new component
+import PROPKDChart from './components/PROPKDChart.vue';
 
 export default {
   components: { LineChart, PROPKDChart },
   data() {
     return {
+      selectedTab: 'mayoPropkd',
       patientId: null,
       age: null,
-      height: 1.70, // Set default height in meters
+      height: 1.70,
       sex: null,
       familyHistory: null,
-      ethnicity: null, // New Ethnicity field
+      ethnicity: null,
       kidneyVolume: null,
       inputMethod: 'Stereology Method',
       kidneyRight: {
@@ -194,7 +208,7 @@ export default {
         'Nontruncating PKD1 mutation',
         'Truncating PKD1 mutation',
       ],
-      ethnicityOptions: ['AA', 'O'], // Ethnicity options: AA for African American, O for Others
+      ethnicityOptions: ['AA', 'O'],
       chartData: {
         datasets: [
           {
@@ -207,8 +221,8 @@ export default {
           },
         ],
       },
-      isDark: false, // Default to light theme
-      propkdScore: 0, // Initialize the PROPKD score
+      isDark: false,
+      propkdScore: 0,
     };
   },
   methods: {
@@ -257,41 +271,28 @@ export default {
         totalVolume = this.kidneyVolume;
       }
 
-      const htAdjustedTKV = totalVolume / this.height; // Use height in meters directly
+      const htAdjustedTKV = totalVolume / this.height;
 
       const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId };
 
-      // Create a shallow copy of the dataset to avoid reactivity issues
       const newChartData = { ...this.chartData };
       newChartData.datasets = [
         {
           ...newChartData.datasets[0],
-          data: [...newChartData.datasets[0].data, newDataPoint], // Add new data point
+          data: [...newChartData.datasets[0].data, newDataPoint],
         },
       ];
 
-      // Update the chartData with a new reference
       this.chartData = newChartData;
     },
     calculatePROPKDScore() {
-      // Sex score: Male adds 1 point
       const sexScore = this.sex === 'Male' ? 1 : 0;
-
-      // Mutation score based on mutation class
       const mutationScore = this.mutationClass === 'PKD2 mutation' ? 0 :
                             this.mutationClass === 'Nontruncating PKD1 mutation' ? 2 : 4;
-
-      // Hypertension score
       const hypertensionScore = this.hypertension ? 2 : 0;
-
-      // Urological event score
       const urologicalEventScore = this.firstUrologicalEvent ? 2 : 0;
 
-      // Calculate the total PROPKD score
       this.propkdScore = sexScore + mutationScore + hypertensionScore + urologicalEventScore;
-
-      // Optionally, log or display the score
-      console.log("Calculated PROPKD Score: ", this.propkdScore);
     },
   },
 };
@@ -303,7 +304,6 @@ export default {
   margin: 0 auto;
 }
 
-/* Adjust inputs and padding */
 .v-card-text {
   padding: 5px;
 }
@@ -312,7 +312,6 @@ export default {
   margin-bottom: 5px;
 }
 
-/* Equal height class for cards */
 .equal-height-card {
   display: flex;
   flex-direction: column;
@@ -320,18 +319,15 @@ export default {
   min-height: 450px;
 }
 
-/* Smaller card for PROPKD */
 .small-card {
-  min-height: 200px; /* Reduce the min-height for the card */
+  min-height: 200px;
 }
 
-/* Adjust padding and layout inside the PROPKD card */
 .small-card .v-card-text {
-  padding: 8px; /* Reduce padding inside the card */
+  padding: 8px;
 }
 
 .small-card .v-select, .small-card .v-checkbox {
-  margin-bottom: 4px; /* Tighten spacing between inputs */
+  margin-bottom: 4px;
 }
-
 </style>
