@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import {
   Chart as ChartJS,
   ScatterController,
@@ -45,65 +45,55 @@ export default {
     const classificationData = [
       {
         label: 'Class 1A',
-        data: [
-          { x: 15, y: 187.535 }, { x: 80, y: 493.599 }
-        ],
+        data: [{ x: 15, y: 187.535 }, { x: 80, y: 493.599 }],
         borderColor: '#00b050',
-        backgroundColor: 'rgba(0, 176, 80, 0.2)',  // Adding semi-transparent background color for the fill
+        backgroundColor: 'rgba(0, 176, 80, 0.2)',
         borderWidth: 2,
-        fill: 'origin', // Fill the area below the line
+        fill: 'origin',
         showLine: true,
-        pointRadius: 0, // Disable points on the classification lines
-        hoverRadius: 0, // Disable hover effect on classification lines
+        pointRadius: 0,
+        hoverRadius: 0,
       },
       {
         label: 'Class 1B',
-        data: [
-          { x: 15, y: 233.695 }, { x: 80, y: 1596.134 }
-        ],
+        data: [{ x: 15, y: 233.695 }, { x: 80, y: 1596.134 }],
         borderColor: '#ccff99',
-        backgroundColor: 'rgba(204, 255, 153, 0.2)',  // Semi-transparent yellow-green
+        backgroundColor: 'rgba(204, 255, 153, 0.2)',
         borderWidth: 2,
-        fill: '-1', // Fill the area between this line and the previous line (Class 1A)
+        fill: '-1',
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
       },
       {
         label: 'Class 1C',
-        data: [
-          { x: 15, y: 290.292 }, { x: 80, y: 5074.514 }
-        ],
+        data: [{ x: 15, y: 290.292 }, { x: 80, y: 5074.514 }],
         borderColor: '#ffc000',
-        backgroundColor: 'rgba(255, 192, 0, 0.2)',  // Semi-transparent yellow
+        backgroundColor: 'rgba(255, 192, 0, 0.2)',
         borderWidth: 2,
-        fill: '-1', // Fill the area between this line and the previous line (Class 1B)
+        fill: '-1',
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
       },
       {
         label: 'Class 1D',
-        data: [
-          { x: 15, y: 359.484 }, { x: 80, y: 15869.399 }
-        ],
+        data: [{ x: 15, y: 359.484 }, { x: 80, y: 15869.399 }],
         borderColor: '#ff6600',
-        backgroundColor: 'rgba(255, 102, 0, 0.2)',  // Semi-transparent orange
+        backgroundColor: 'rgba(255, 102, 0, 0.2)',
         borderWidth: 2,
-        fill: '-1', // Fill the area between this line and the previous line (Class 1C)
+        fill: '-1',
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
       },
       {
         label: 'Class 1E',
-        data: [
-          { x: 15, y: 100 }, { x: 80, y: 100 }
-        ],
+        data: [{ x: 15, y: 100 }, { x: 80, y: 100 }],
         borderColor: 'black',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',  // Semi-transparent black
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
         borderWidth: 2,
-        fill: '-1', // Fill the area between this line and the previous line (Class 1D)
+        fill: '-1',
         showLine: true,
         pointRadius: 0,
         hoverRadius: 0,
@@ -111,82 +101,75 @@ export default {
     ];
 
     const createChart = () => {
-    const ctx = canvas.value.getContext('2d');
-    chartInstance = new ChartJS(ctx, {
+      const ctx = canvas.value.getContext('2d');
+      chartInstance = new ChartJS(ctx, {
         type: 'scatter',
         data: {
-        ...props.chartData,
-        datasets: [
-            ...props.chartData.datasets,
-            ...classificationData, // Adding the classification lines and background colors
-        ],
+          ...props.chartData,
+          datasets: [...props.chartData.datasets, ...classificationData],
         },
         options: {
-        scales: {
+          responsive: true, // Make the chart responsive
+          scales: {
             x: {
-            type: 'linear',
-            position: 'bottom',
-            min: 20,
-            max: 80,
-            title: {
+              type: 'linear',
+              position: 'bottom',
+              min: 20,
+              max: 80,
+              title: {
                 display: true,
                 text: 'Patient Age (Years)',
-            },
+              },
             },
             y: {
-            type: 'logarithmic', // Set Y-axis to logarithmic
-            min: 100,
-            max: 20000,
-            title: {
+              type: 'logarithmic',
+              min: 100,
+              max: 20000,
+              title: {
                 display: true,
                 text: 'HtTKV (mL/m)',
-            },
-            ticks: {
+              },
+              ticks: {
                 callback: function (value) {
-                return value; // Format the ticks properly
+                  return value;
                 },
+              },
             },
-            },
-        },
-        plugins: {
+          },
+          plugins: {
             legend: {
-            display: true,
-            position: 'top',
+              display: true,
+              position: 'top',
             },
             tooltip: {
-            callbacks: {
+              callbacks: {
                 label: function (context) {
-                const point = context.raw;
-                return `Patient ID: ${point.patientId}, Age: ${point.x}, Volume: ${point.y}`;
+                  const point = context.raw;
+                  return `Patient ID: ${point.patientId}, Age: ${point.x}, Volume: ${point.y}`;
                 },
+              },
+              mode: 'nearest',
+              intersect: true,
             },
-            mode: 'nearest',
-            intersect: true,
-            filter: (tooltipItem) => {
-                // Only show tooltips for points, not for lines/areas
-                return tooltipItem.datasetIndex < props.chartData.datasets.length;
-            },
-            },
-            filler: {
-            propagate: true, // Enable filler for the chart
-            },
+          },
         },
-        interaction: {
-            mode: 'nearest',
-            intersect: true, // Only interact with points, not the entire area
-        },
-        },
-    });
+      });
     };
 
-    // Watch for changes in the chartData prop and update the chart
+    const resizeChart = () => {
+      if (chartInstance) {
+        chartInstance.resize(); // Ensure chart resizes dynamically
+      }
+    };
+
+    // Watch for changes in chartData
     watch(
       () => props.chartData,
       (newData) => {
         if (chartInstance) {
           chartInstance.data = {
             ...newData,
-            datasets: [...newData.datasets, ...classificationData], // Re-apply the classification lines and fills
+            datasets: [...newData.datasets, ...classificationData],
           };
           chartInstance.update();
         }
@@ -196,6 +179,11 @@ export default {
 
     onMounted(() => {
       createChart();
+      window.addEventListener('resize', resizeChart); // Add listener for window resize
+    });
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', resizeChart); // Remove listener when component unmounts
     });
 
     return {
@@ -204,3 +192,11 @@ export default {
   },
 };
 </script>
+
+<style>
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 400px; /* Set a default height */
+}
+</style>
