@@ -13,11 +13,14 @@
 
     <v-main>
       <v-container>
-        <!-- Patient Information Section -->
+        <!-- Step 1: Patient Information Section -->
         <v-row>
           <v-col cols="12" md="12">
             <v-card outlined class="pa-1 mb-2">
-              <v-card-title>Patient Information</v-card-title>
+              <v-card-title>
+                <v-icon class="mr-2">mdi-numeric-1-circle-outline</v-icon> 
+                Patient Information
+              </v-card-title>
               <v-card-text class="pa-1">
                 <v-row dense>
                   <v-col cols="12" sm="2" md="2">
@@ -52,14 +55,17 @@
           </v-col>
         </v-row>
 
-        <!-- Layout for Mayo/PROPKD inputs and charts -->
+         <!-- Step 2: Mayo and PROPKD Inputs -->
         <v-row>
           <!-- Left Column: Mayo and PROPKD Inputs -->
           <v-col cols="12" md="6">
             <!-- Mayo Score Section -->
             <v-card class="equal-height-card pa-1 mb-2" outlined>
               <v-card-title class="d-flex justify-space-between align-center">
-                <span>Mayo Score</span>
+                <span>
+                  <v-icon class="mr-2">mdi-numeric-2-circle-outline</v-icon>
+                  Mayo Score
+                </span>
                 <v-select
                   v-model="inputMethod"
                   :items="['Ellipsoid Equation', 'Stereology Method']"
@@ -105,10 +111,13 @@
               </v-card-text>
             </v-card>
 
-          <!-- PROPKD Score Section -->
+          <!-- Step 3: PROPKD Score Section -->
           <v-card class="small-card pa-1" outlined>
             <v-card-title class="d-flex justify-space-between">
-              PROPKD Score
+              <span>
+                <v-icon class="mr-2">mdi-numeric-3-circle-outline</v-icon>
+                PROPKD Score
+              </span>
               <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
             </v-card-title>
             <v-card-text class="pa-1">
