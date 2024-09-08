@@ -44,22 +44,18 @@ export default {
 
     // Mapping Mayo and PROPKD scores to risk categories
     const mayoToRisk = (mayoScore) => {
-      // Validate mayoScore; if it's invalid, fallback to default
       if (typeof mayoScore !== 'number' || mayoScore < 1 || mayoScore > 5) {
         mayoScore = 1; // Default to low risk if invalid
       }
-
       if (mayoScore === 1 || mayoScore === 2) return 'low';
       if (mayoScore === 3) return 'intermediate';
       return 'high';
     };
 
     const propkdToRisk = (propkdScore) => {
-      // Validate propkdScore; if it's invalid, fallback to default
       if (typeof propkdScore !== 'number' || propkdScore < 0 || propkdScore > 9) {
         propkdScore = 0; // Default to low risk if invalid
       }
-
       if (propkdScore >= 0 && propkdScore <= 3) return 'low';
       if (propkdScore >= 4 && propkdScore <= 6) return 'intermediate';
       return 'high';
@@ -69,7 +65,6 @@ export default {
     const createChart = () => {
       const ctx = canvas.value.getContext('2d');
 
-      // Use validated props for Mayo and PROPKD scores
       const mayoRisk = mayoToRisk(props.mayoScore);
       const propkdRisk = propkdToRisk(props.propkdScore);
 
@@ -80,6 +75,35 @@ export default {
       };
 
       const patientCoords = getPatientCoords(mayoRisk, propkdRisk);
+
+      // Plugin to draw the colored background
+      const backgroundPlugin = {
+        id: 'backgroundPlugin',
+        beforeDraw: (chart) => {
+          const { ctx, scales: { x, y } } = chart;
+          ctx.save();
+
+          const colors = [
+            ['#BCE9F9', '#FFEFB2', '#FFCCCC'], // Row for low PROPKD
+            ['#D3F8D8', '#FFEFB2', '#FFCCCC'], // Row for intermediate PROPKD
+            ['#BCE9F9', '#FFEFB2', '#FFCCCC'], // Row for high PROPKD
+          ];
+
+          for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+              ctx.fillStyle = colors[i][j];
+              ctx.fillRect(
+                x.getPixelForValue(j + 1) - (x.width / 6),
+                y.getPixelForValue(i + 1) - (y.height / 6),
+                x.width / 3,
+                y.height / 3
+              );
+            }
+          }
+
+          ctx.restore();
+        }
+      };
 
       chartInstance = new ChartJS(ctx, {
         type: 'scatter',
@@ -96,6 +120,7 @@ export default {
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false, // Ensures square plot
           scales: {
             x: {
               type: 'linear',
@@ -139,6 +164,7 @@ export default {
             },
           },
         },
+        plugins: [backgroundPlugin],
       });
     };
 
@@ -179,6 +205,7 @@ export default {
 <style scoped>
 canvas {
   max-width: 500px;
+  height: 500px;
   margin: 0 auto;
 }
 </style>
