@@ -223,7 +223,7 @@ export default {
         ],
       },
       isDark: false,
-      mayoScore: null,  // Add mayoScore definition here
+      mayoScore: 1, // Set a default valid score
       propkdScore: 0,
       mayoClass: 'low',
     };
@@ -283,7 +283,7 @@ export default {
       const htAdjustedTKV = totalVolume / this.height;
 
       this.mayoClass = this.getMayoClass(htAdjustedTKV);
-      this.mayoScore = htAdjustedTKV;  // Define mayoScore based on calculation
+      this.mayoScore = Number(htAdjustedTKV) || 1;  // Ensure mayoScore is numeric
 
       const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId, mayoClass: this.mayoClass };
 
@@ -304,7 +304,7 @@ export default {
       const hypertensionScore = this.hypertension ? 2 : 0;
       const urologicalEventScore = this.firstUrologicalEvent ? 2 : 0;
 
-      this.propkdScore = sexScore + mutationScore + hypertensionScore + urologicalEventScore;
+      this.propkdScore = Number(sexScore + mutationScore + hypertensionScore + urologicalEventScore) || 0;
     },
   },
 };

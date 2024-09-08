@@ -45,6 +45,7 @@ export default {
     // Mapping Mayo and PROPKD scores to risk categories
     const mayoToRisk = (mayoScore) => {
       if (typeof mayoScore !== 'number' || mayoScore < 1 || mayoScore > 5) {
+        console.warn('Invalid Mayo Score:', mayoScore);
         mayoScore = 1; // Default to low risk if invalid
       }
       if (mayoScore === 1 || mayoScore === 2) return 'low';
@@ -54,6 +55,7 @@ export default {
 
     const propkdToRisk = (propkdScore) => {
       if (typeof propkdScore !== 'number' || propkdScore < 0 || propkdScore > 9) {
+        console.warn('Invalid PROPKD Score:', propkdScore);
         propkdScore = 0; // Default to low risk if invalid
       }
       if (propkdScore >= 0 && propkdScore <= 3) return 'low';
