@@ -34,7 +34,7 @@
                     <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1" required dense outlined density="compact" />
+                    <v-text-field v-model="height" label="Height (m)" type="number" :min="1.4" :max="2.4" step="0.01" min="1" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" required dense outlined density="compact" />
@@ -183,7 +183,7 @@ export default {
       selectedTab: 'mayoPropkd',
       patientId: null,
       age: null,
-      height: 1.70,
+      height: null,
       sex: null,
       familyHistory: null,
       ethnicity: null,
