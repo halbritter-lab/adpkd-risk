@@ -7,7 +7,7 @@
       class="grid-cell"
       cols="1"
     >
-      <div v-bind="attrs" v-on="on">
+      <div>
         {{ cell.value }}
         <v-tooltip activator="parent" location="top">
           {{ cell.label }}: {{ cell.description }}
