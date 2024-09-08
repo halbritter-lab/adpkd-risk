@@ -21,19 +21,19 @@
               <v-card-text class="pa-1">
                 <v-row dense>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="patientId" label="Patient ID" dense outlined />
+                    <v-text-field v-model="patientId" label="Patient ID" dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" dense outlined />
+                    <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1" dense outlined />
+                    <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1" dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" dense outlined />
+                    <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-select v-model="familyHistory" :items="['Positive', 'Negative']" label="Family History" dense outlined />
+                    <v-select v-model="familyHistory" :items="['Positive', 'Negative']" label="Family History" dense outlined density="compact" />
                   </v-col>
                   <!-- Ethnicity Select Input -->
                   <v-col cols="12" sm="2" md="2">
@@ -43,6 +43,7 @@
                       label="Ethnicity"
                       dense
                       outlined
+                      density="compact"
                     />
                   </v-col>
                 </v-row>
@@ -66,25 +67,26 @@
                   outlined
                   hide-details
                   style="max-width: 250px;"
+                  density="compact"
                 />
-                <v-btn small color="primary" @click="calculateHtTKV">Calculate</v-btn>
+                <v-btn small color="primary" @click="calculateHtTKV" density="compact">Calculate</v-btn>
               </v-card-title>
               <v-card-text class="pa-1">
                 <template v-if="inputMethod === 'Ellipsoid Equation'">
                   <v-row dense>
                     <v-col cols="6">
                       <!-- Left Kidney Inputs -->
-                      <v-text-field v-model="kidneyLeft.sagittal" label="Left Kidney Sagittal Length (mm)" type="number" dense outlined />
-                      <v-text-field v-model="kidneyLeft.coronal" label="Left Kidney Coronal Length (mm)" type="number" dense outlined />
-                      <v-text-field v-model="kidneyLeft.width" label="Left Kidney Width (mm)" type="number" dense outlined />
-                      <v-text-field v-model="kidneyLeft.depth" label="Left Kidney Depth (mm)" type="number" dense outlined />
+                      <v-text-field v-model="kidneyLeft.sagittal" label="Left Kidney Sagittal Length (mm)" type="number" dense outlined density="compact" />
+                      <v-text-field v-model="kidneyLeft.coronal" label="Left Kidney Coronal Length (mm)" type="number" dense outlined density="compact" />
+                      <v-text-field v-model="kidneyLeft.width" label="Left Kidney Width (mm)" type="number" dense outlined density="compact" />
+                      <v-text-field v-model="kidneyLeft.depth" label="Left Kidney Depth (mm)" type="number" dense outlined density="compact" />
                     </v-col>
                     <v-col cols="6">
                       <!-- Right Kidney Inputs -->
-                      <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined />
-                      <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined />
-                      <v-text-field v-model="kidneyRight.width" label="Right Kidney Width (mm)" type="number" dense outlined />
-                      <v-text-field v-model="kidneyRight.depth" label="Right Kidney Depth (mm)" type="number" dense outlined />
+                      <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined density="compact" />
+                      <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined density="compact" />
+                      <v-text-field v-model="kidneyRight.width" label="Right Kidney Width (mm)" type="number" dense outlined density="compact" />
+                      <v-text-field v-model="kidneyRight.depth" label="Right Kidney Depth (mm)" type="number" dense outlined density="compact"/>
                     </v-col>
                   </v-row>
                 </template>
@@ -97,6 +99,7 @@
                     :max="20000"
                     dense
                     outlined
+                    density="compact"
                   />
                 </template>
               </v-card-text>
@@ -106,12 +109,12 @@
             <v-card outlined class="pa-1">
               <v-card-title class="d-flex justify-space-between">
                 PROPKD Score
-                <v-btn small color="primary" @click="calculatePROPKDScore">Calculate</v-btn>
+                <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
               </v-card-title>
               <v-card-text class="pa-1">
-                <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined />
-                <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined />
-                <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined />
+                <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined density="compact" />
+                <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined density="compact" />
+                <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined density="compact" />
               </v-card-text>
             </v-card>
           </v-col>
