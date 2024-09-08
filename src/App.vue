@@ -113,8 +113,14 @@
               </v-card-title>
               <v-card-text class="pa-1">
                 <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined density="compact" />
-                <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined density="compact" />
-                <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined density="compact" />
+                <v-row dense>
+                  <v-col cols="6">
+                    <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined density="compact" />
+                  </v-col>
+                  <v-col cols="6">
+                    <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined density="compact" />
+                  </v-col>
+                </v-row>
               </v-card-text>
             </v-card>
           </v-col>
