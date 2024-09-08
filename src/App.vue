@@ -265,12 +265,24 @@ export default {
       this.chartData = newChartData;
     },
     calculatePROPKDScore() {
+      // Sex score: Male adds 1 point
+      const sexScore = this.sex === 'Male' ? 1 : 0;
+
+      // Mutation score based on mutation class
       const mutationScore = this.mutationClass === 'PKD2 mutation' ? 0 :
                             this.mutationClass === 'Nontruncating PKD1 mutation' ? 2 : 4;
 
+      // Hypertension score
       const hypertensionScore = this.hypertension ? 2 : 0;
+
+      // Urological event score
       const urologicalEventScore = this.firstUrologicalEvent ? 2 : 0;
-      this.propkdScore = mutationScore + hypertensionScore + urologicalEventScore; // Calculate PROPKD Score
+
+      // Calculate the total PROPKD score
+      this.propkdScore = sexScore + mutationScore + hypertensionScore + urologicalEventScore;
+
+      // Optionally, log or display the score
+      console.log("Calculated PROPKD Score: ", this.propkdScore);
     },
   },
 };
