@@ -2,7 +2,7 @@
   <v-app :theme="isDark ? 'dark' : 'light'">
     <v-toolbar color="secondary" dark>
       <img
-        src="../logo.webp"
+        src="/logo.webp"
         alt="ADPKD-Risk Logo"
         class="mx-3 app-logo"
       >
