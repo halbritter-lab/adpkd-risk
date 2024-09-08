@@ -13,27 +13,31 @@
 
     <v-main>
       <v-container>
+        <v-alert v-if="errorMessage" type="error" outlined class="mb-3">
+          {{ errorMessage }}
+        </v-alert>
+
         <!-- Step 1: Patient Information Section -->
         <v-row>
           <v-col cols="12" md="12">
             <v-card outlined class="pa-1 mb-2">
               <v-card-title>
-                <v-icon class="mr-2">mdi-numeric-1-circle-outline</v-icon>
+                <v-icon :color="isStep1Valid ? 'green' : 'red'" class="mr-2">mdi-numeric-1-circle-outline</v-icon>
                 Patient Information
               </v-card-title>
               <v-card-text class="pa-1">
                 <v-row dense>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="patientId" label="Patient ID" dense outlined density="compact" />
+                    <v-text-field v-model="patientId" label="Patient ID" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" dense outlined density="compact" />
+                    <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1" dense outlined density="compact" />
+                    <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" dense outlined density="compact" />
+                    <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-select v-model="familyHistory" :items="['Positive', 'Negative']" label="Family History" dense outlined density="compact" />
@@ -60,10 +64,8 @@
             <!-- Mayo Score Section -->
             <v-card class="equal-height-card pa-1 mb-2" outlined>
               <v-card-title class="d-flex justify-space-between align-center">
-                <span>
-                  <v-icon class="mr-2">mdi-numeric-2-circle-outline</v-icon>
-                  Mayo Score
-                </span>
+                <v-icon :color="isMayoScoreCalculated ? 'green' : 'red'" class="mr-2">mdi-numeric-2-circle-outline</v-icon>
+                Mayo Score
                 <v-select
                   v-model="inputMethod"
                   :items="['Ellipsoid Equation', 'Stereology Method']"
@@ -110,10 +112,8 @@
             <!-- PROPKD Score Section -->
             <v-card class="small-card pa-1" outlined>
               <v-card-title class="d-flex justify-space-between">
-                <span>
-                  <v-icon class="mr-2">mdi-numeric-3-circle-outline</v-icon>
-                  PROPKD Score
-                </span>
+                <v-icon :color="isPROPKDScoreCalculated ? 'green' : 'red'" class="mr-2">mdi-numeric-3-circle-outline</v-icon>
+                PROPKD Score
                 <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
               </v-card-title>
               <v-card-text class="pa-1">
@@ -226,7 +226,19 @@ export default {
       mayoScore: 1, // Set a default valid score
       propkdScore: 0,
       mayoClass: 'low',
+      errorMessage: null, // To display validation errors
     };
+  },
+  computed: {
+    isStep1Valid() {
+      return this.patientId && this.age && this.height && this.sex;
+    },
+    isMayoScoreCalculated() {
+      return this.mayoScore > 1;
+    },
+    isPROPKDScoreCalculated() {
+      return this.propkdScore > 0;
+    },
   },
   methods: {
     toggleTheme() {
@@ -238,9 +250,16 @@ export default {
       if (volume < 359.484) return 'high';
       return 'very high';
     },
+    validateStep1() {
+      if (!this.isStep1Valid) {
+        this.errorMessage = 'Please fill in all required fields in Step 1: Patient ID, Age, Height, and Sex.';
+        return false;
+      }
+      this.errorMessage = null; // Clear error message if valid
+      return true;
+    },
     calculateHtTKV() {
-      if (!this.age || !this.height || this.height <= 0) {
-        alert('Please enter a valid age and height.');
+      if (!this.validateStep1()) {
         return;
       }
 
@@ -257,7 +276,7 @@ export default {
           !this.kidneyLeft.width ||
           !this.kidneyLeft.depth
         ) {
-          alert('Please enter valid kidney dimensions.');
+          this.errorMessage = 'Please enter valid kidney dimensions for both kidneys.';
           return;
         }
 
@@ -274,17 +293,15 @@ export default {
         totalVolume = rightKidneyVolume + leftKidneyVolume;
       } else {
         if (!this.kidneyVolume || this.kidneyVolume <= 0) {
-          alert('Please enter a valid kidney volume.');
+          this.errorMessage = 'Please enter a valid total kidney volume.';
           return;
         }
         totalVolume = this.kidneyVolume;
       }
 
       const htAdjustedTKV = totalVolume / this.height;
-
-      // Clamp the Mayo score to ensure it's within the valid range (1 to 5)
       this.mayoClass = this.getMayoClass(htAdjustedTKV);
-      this.mayoScore = Math.min(Math.max(htAdjustedTKV, 1), 5);  // Ensure Mayo Score is between 1 and 5
+      this.mayoScore = Math.min(Math.max(htAdjustedTKV, 1), 5); // Ensure Mayo Score is between 1 and 5
 
       const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId, mayoClass: this.mayoClass };
 
@@ -297,8 +314,14 @@ export default {
       ];
 
       this.chartData = newChartData;
+      this.errorMessage = null; // Clear error message after successful calculation
     },
     calculatePROPKDScore() {
+      if (!this.sex || !this.mutationClass) {
+        this.errorMessage = 'Sex and Mutation Class are required to calculate PROPKD Score.';
+        return;
+      }
+
       const sexScore = this.sex === 'Male' ? 1 : 0;
       const mutationScore = this.mutationClass === 'PKD2 mutation' ? 0 :
                             this.mutationClass === 'Nontruncating PKD1 mutation' ? 2 : 4;
@@ -306,6 +329,7 @@ export default {
       const urologicalEventScore = this.firstUrologicalEvent ? 2 : 0;
 
       this.propkdScore = Number(sexScore + mutationScore + hypertensionScore + urologicalEventScore) || 0;
+      this.errorMessage = null; // Clear error message after successful calculation
     },
   },
 };

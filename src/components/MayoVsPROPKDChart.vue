@@ -44,6 +44,7 @@ export default {
 
     // Mapping Mayo and PROPKD scores to risk categories
     const mayoToRisk = (mayoScore) => {
+      console.log('Converting Mayo Score:', mayoScore); // Debug
       if (typeof mayoScore !== 'number' || mayoScore < 1 || mayoScore > 5) {
         console.warn('Invalid Mayo Score:', mayoScore);
         mayoScore = 1; // Default to low risk if invalid
@@ -54,6 +55,7 @@ export default {
     };
 
     const propkdToRisk = (propkdScore) => {
+      console.log('Converting PROPKD Score:', propkdScore); // Debug
       if (typeof propkdScore !== 'number' || propkdScore < 0 || propkdScore > 9) {
         console.warn('Invalid PROPKD Score:', propkdScore);
         propkdScore = 0; // Default to low risk if invalid
@@ -65,10 +67,18 @@ export default {
 
     // Create the chart
     const createChart = () => {
+      if (!canvas.value) {
+        console.error('Canvas element is not available'); // Debug
+        return;
+      }
       const ctx = canvas.value.getContext('2d');
+
+      console.log('Mayo Score:', props.mayoScore, 'PROPKD Score:', props.propkdScore); // Debug
 
       const mayoRisk = mayoToRisk(props.mayoScore);
       const propkdRisk = propkdToRisk(props.propkdScore);
+
+      console.log('Mayo Risk:', mayoRisk, 'PROPKD Risk:', propkdRisk); // Debug
 
       const getPatientCoords = (mayoRisk, propkdRisk) => {
         const xMap = { low: 1, intermediate: 2, high: 3 };
@@ -78,7 +88,8 @@ export default {
 
       const patientCoords = getPatientCoords(mayoRisk, propkdRisk);
 
-      // Plugin to draw the colored background
+      console.log('Patient Coordinates:', patientCoords); // Debug
+
       const backgroundPlugin = {
         id: 'backgroundPlugin',
         beforeDraw: (chart) => {
@@ -107,6 +118,10 @@ export default {
         }
       };
 
+      if (chartInstance) {
+        chartInstance.destroy(); // Destroy previous chart instance
+      }
+
       chartInstance = new ChartJS(ctx, {
         type: 'scatter',
         data: {
@@ -122,7 +137,8 @@ export default {
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false, // Ensures square plot
+          maintainAspectRatio: true, // Keep aspect ratio intact
+          aspectRatio: 1, // Ensure the chart is square
           scales: {
             x: {
               type: 'linear',
@@ -170,23 +186,21 @@ export default {
       });
     };
 
+    // Watch for changes in props and update chart
+    watch(
+      () => [props.mayoScore, props.propkdScore],
+      () => {
+        console.log('Props changed:', { mayoScore: props.mayoScore, propkdScore: props.propkdScore }); // Debug
+        createChart();
+      }
+    );
+
     // Resize chart on window resize
     const resizeChart = () => {
       if (chartInstance) {
         chartInstance.resize();
       }
     };
-
-    // Watch for changes in props and update chart
-    watch(
-      () => [props.mayoScore, props.propkdScore],
-      () => {
-        if (chartInstance) {
-          chartInstance.destroy();
-        }
-        createChart();
-      }
-    );
 
     onMounted(() => {
       createChart();
@@ -195,6 +209,9 @@ export default {
 
     onBeforeUnmount(() => {
       window.removeEventListener('resize', resizeChart);
+      if (chartInstance) {
+        chartInstance.destroy(); // Cleanup chart on unmount
+      }
     });
 
     return {
@@ -206,8 +223,8 @@ export default {
 
 <style scoped>
 canvas {
-  max-width: 500px;
-  height: 500px;
+  width: 70% !important;
+  height: 70% !important;
   margin: 0 auto;
 }
 </style>
