@@ -44,7 +44,6 @@ export default {
 
     // Mapping Mayo and PROPKD scores to risk categories
     const mayoToRisk = (mayoScore) => {
-      console.log('Converting Mayo Score:', mayoScore); // Debug
       if (typeof mayoScore !== 'number' || mayoScore < 1 || mayoScore > 5) {
         console.warn('Invalid Mayo Score:', mayoScore);
         mayoScore = 1; // Default to low risk if invalid
@@ -55,7 +54,6 @@ export default {
     };
 
     const propkdToRisk = (propkdScore) => {
-      console.log('Converting PROPKD Score:', propkdScore); // Debug
       if (typeof propkdScore !== 'number' || propkdScore < 0 || propkdScore > 9) {
         console.warn('Invalid PROPKD Score:', propkdScore);
         propkdScore = 0; // Default to low risk if invalid
@@ -73,12 +71,8 @@ export default {
       }
       const ctx = canvas.value.getContext('2d');
 
-      console.log('Mayo Score:', props.mayoScore, 'PROPKD Score:', props.propkdScore); // Debug
-
       const mayoRisk = mayoToRisk(props.mayoScore);
       const propkdRisk = propkdToRisk(props.propkdScore);
-
-      console.log('Mayo Risk:', mayoRisk, 'PROPKD Risk:', propkdRisk); // Debug
 
       const getPatientCoords = (mayoRisk, propkdRisk) => {
         const xMap = { low: 1, intermediate: 2, high: 3 };
@@ -87,8 +81,6 @@ export default {
       };
 
       const patientCoords = getPatientCoords(mayoRisk, propkdRisk);
-
-      console.log('Patient Coordinates:', patientCoords); // Debug
 
       const backgroundPlugin = {
         id: 'backgroundPlugin',
@@ -190,7 +182,6 @@ export default {
     watch(
       () => [props.mayoScore, props.propkdScore],
       () => {
-        console.log('Props changed:', { mayoScore: props.mayoScore, propkdScore: props.propkdScore }); // Debug
         createChart();
       }
     );

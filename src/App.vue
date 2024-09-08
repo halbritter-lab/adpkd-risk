@@ -6,6 +6,13 @@
         <span class="version">v0.1.0</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+
+      <!-- Reset Button -->
+      <v-btn icon @click="resetForm">
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+
+      <!-- Theme Toggle Button -->
       <v-btn icon @click="toggleTheme">
         <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
       </v-btn>
@@ -34,7 +41,7 @@
                     <v-text-field v-model="age" label="Age" type="number" :min="20" :max="80" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="height" label="Height (m)" type="number" :min="1.4" :max="2.4" step="0.01" min="1" required dense outlined density="compact" />
+                    <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1.4" :max="2.4" required dense outlined density="compact" />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" required dense outlined density="compact" />
@@ -257,6 +264,37 @@ export default {
       }
       this.errorMessage = null; // Clear error message if valid
       return true;
+    },
+    resetForm() {
+      // Reset all form fields to their initial state
+      this.patientId = null;
+      this.age = null;
+      this.height = null;
+      this.sex = null;
+      this.familyHistory = null;
+      this.ethnicity = null;
+      this.kidneyVolume = null;
+      this.inputMethod = 'Stereology Method';
+      this.kidneyRight = {
+        sagittal: null,
+        coronal: null,
+        width: null,
+        depth: null,
+      };
+      this.kidneyLeft = {
+        sagittal: null,
+        coronal: null,
+        width: null,
+        depth: null,
+      };
+      this.mutationClass = null;
+      this.hypertension = false;
+      this.firstUrologicalEvent = false;
+      this.mayoScore = 1;
+      this.propkdScore = 0;
+      this.chartData.datasets[0].data = [];
+      this.errorMessage = null;
+      this.selectedTab = 'mayoPropkd'; // Reset to the first tab
     },
     calculateHtTKV() {
       if (!this.validateStep1()) {
