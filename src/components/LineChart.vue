@@ -138,8 +138,7 @@ export default {
           },
           plugins: {
             legend: {
-              display: true,
-              position: 'top',
+              display: false, // Completely remove the legend
             },
             tooltip: {
               callbacks: {
