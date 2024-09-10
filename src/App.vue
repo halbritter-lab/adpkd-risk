@@ -30,6 +30,14 @@
           {{ isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme' }}
         </v-tooltip>
       </v-btn>
+
+      <!-- FAQ Button -->
+      <v-btn icon @click="openFAQ" aria-label="Open FAQ">
+        <v-icon>mdi-help-circle</v-icon>
+        <v-tooltip activator="parent" location="bottom">
+          How to Use & FAQ
+        </v-tooltip>
+      </v-btn>
     </v-toolbar>
 
     <v-main>
@@ -359,7 +367,41 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn @click="closeModal">I Acknowledge</v-btn>
+              <v-btn color="primary" @click="closeModal">I Acknowledge</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <!-- Modal for FAQ -->
+        <v-dialog v-model="showFAQModal" persistent max-width="600">
+          <v-card>
+            <v-card-title>How to Use & FAQ</v-card-title>
+            <v-card-text>
+              <h3>How to Use the ADPKD Risk Calculator</h3>
+              <ul>
+                <li>Input patient information such as ID, age, height, and sex in the "Individual" section.</li>
+                <li>For Mayo score, choose a calculation method (Ellipsoid Equation or Stereology Method) and input the necessary kidney dimensions.</li>
+                <li>Click "Calculate" to compute the Mayo score.</li>
+                <li>For PROPKD score, provide mutation class and clinical history.</li>
+                <li>Click "Calculate" to compute the PROPKD score.</li>
+              </ul>
+
+              <h3>Frequently Asked Questions (FAQ)</h3>
+              <h4>1. What does the Mayo score represent?</h4>
+              <p>The Mayo score is used to classify the severity of ADPKD based on kidney volume adjusted for age and height.</p>
+
+              <h4>2. What is the PROPKD score?</h4>
+              <p>The PROPKD score evaluates the genetic and clinical risk factors for disease progression in ADPKD patients.</p>
+
+              <h4>3. How do I interpret the risk categories?</h4>
+              <p>The combined risk categories use both the Mayo and PROPKD scores to stratify patients into low, intermediate, and high-risk groups.</p>
+              
+              <h4>4. Can I use this tool for clinical decision-making?</h4>
+              <p>No, the ADPKD Risk Calculator is intended for educational and research purposes only and should not be used for clinical decision-making.</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="closeFAQ">Close</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -444,7 +486,9 @@ export default {
           title: "Usage Guidelines",
           content: "The results provided by this tool should not be used as a basis for diagnosis or treatment without consulting a healthcare professional."
         }
-      ]
+      ],
+      // FAQ Modal data
+      showFAQModal: false,
     };
   },
   computed: {
@@ -590,8 +634,15 @@ export default {
     },
     reopenModal() {
       this.showModal = true;
-    }
-  }
+    },
+    // Methods for FAQ Modal
+    openFAQ() {
+      this.showFAQModal = true;
+    },
+    closeFAQ() {
+      this.showFAQModal = false;
+    },
+  },
 };
 </script>
 
