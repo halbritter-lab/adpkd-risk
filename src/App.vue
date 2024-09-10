@@ -5,17 +5,18 @@
         src="/logo.webp"
         alt="ADPKD-Risk Logo"
         class="mx-2 app-logo"
-      >
+        aria-label="ADPKD Risk Calculator Logo"
+      />
       <v-toolbar-title class="d-flex align-center mx-0">
         <h1 class="app-title">
           ADPKD Risk
-          </h1>
-         <span class="app-version">v{{ version }}</span>
+        </h1>
+        <span class="app-version" aria-label="Version {{ version }}">v{{ version }}</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
       <!-- Reset Button -->
-      <v-btn icon @click="resetForm">
+      <v-btn icon @click="resetForm" aria-label="Reset Form">
         <v-icon>mdi-refresh</v-icon>
         <v-tooltip activator="parent" location="bottom">
           Reset Form
@@ -23,7 +24,7 @@
       </v-btn>
 
       <!-- Theme Toggle Button -->
-      <v-btn icon @click="toggleTheme">
+      <v-btn icon @click="toggleTheme" :aria-label="isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'">
         <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
         <v-tooltip activator="parent" location="bottom">
           {{ isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme' }}
@@ -40,14 +41,22 @@
             <v-card outlined class="pa-1 mb-2">
               <v-card-title>
                 <span>
-                  <v-icon :color="isStep1Valid ? 'green' : 'red'" class="mr-2">mdi-numeric-1-circle-outline</v-icon>
-                  Individual
+                  <v-icon :color="isStep1Valid ? 'green' : 'red'" class="mr-2" aria-hidden="true">mdi-numeric-1-circle-outline</v-icon>
+                  <span aria-label="Patient Information Section">Individual</span>
                 </span>
               </v-card-title>
               <v-card-text class="pa-1">
                 <v-row dense>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="patientId" label="Patient ID" required dense outlined density="compact" />
+                    <v-text-field
+                      v-model="patientId"
+                      label="Patient ID"
+                      required
+                      dense
+                      outlined
+                      density="compact"
+                      aria-label="Patient ID"
+                    />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-text-field
@@ -59,16 +68,46 @@
                       outlined
                       density="compact"
                       required
+                      aria-label="Patient Age"
                     />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field v-model="height" label="Height (m)" type="number" step="0.01" min="1.4" :max="2.4" required dense outlined density="compact" />
+                    <v-text-field
+                      v-model="height"
+                      label="Height (m)"
+                      type="number"
+                      step="0.01"
+                      min="1.4"
+                      :max="2.4"
+                      required
+                      dense
+                      outlined
+                      density="compact"
+                      aria-label="Patient Height"
+                    />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-select v-model="sex" :items="['Male', 'Female']" label="Sex" required dense outlined density="compact" />
+                    <v-select
+                      v-model="sex"
+                      :items="['Male', 'Female']"
+                      label="Sex"
+                      required
+                      dense
+                      outlined
+                      density="compact"
+                      aria-label="Patient Sex"
+                    />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
-                    <v-select v-model="familyHistory" :items="['Positive', 'Negative']" label="Family History" dense outlined density="compact" />
+                    <v-select
+                      v-model="familyHistory"
+                      :items="['Positive', 'Negative']"
+                      label="Family History"
+                      dense
+                      outlined
+                      density="compact"
+                      aria-label="Family History"
+                    />
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-select
@@ -78,6 +117,7 @@
                       dense
                       outlined
                       density="compact"
+                      aria-label="Ethnicity"
                     />
                   </v-col>
                 </v-row>
@@ -89,38 +129,104 @@
         <!-- Step 2: Mayo and PROPKD Inputs -->
         <v-row>
           <v-col cols="12" md="6">
-            <!-- Mayo Score Section -->
             <v-card class="equal-height-card pa-1 mb-2" outlined>
               <v-card-title class="d-flex justify-space-between align-center">
                 <span>
-                  <v-icon :color="isMayoScoreCalculated ? 'green' : 'red'" class="mr-2">mdi-numeric-2-circle-outline</v-icon>
-                  Mayo
+                  <v-icon :color="isMayoScoreCalculated ? 'green' : 'red'" class="mr-2" aria-hidden="true">mdi-numeric-2-circle-outline</v-icon>
+                  <span aria-label="Mayo Score Section">Mayo</span>
                 </span>
-                  <v-select
-                    v-model="inputMethod"
-                    :items="['Ellipsoid Equation', 'Stereology Method']"
-                    dense
-                    outlined
-                    hide-details
-                    style="max-width: 250px;"
-                    density="compact"
-                  />
-                <v-btn small color="primary" @click="calculateHtTKV" density="compact">Calculate</v-btn>
+                <v-select
+                  v-model="inputMethod"
+                  :items="['Ellipsoid Equation', 'Stereology Method']"
+                  dense
+                  outlined
+                  hide-details
+                  style="max-width: 250px;"
+                  density="compact"
+                  aria-label="Input Method"
+                />
+                <v-btn small color="primary" @click="calculateHtTKV" density="compact" aria-label="Calculate Mayo Score">
+                  Calculate
+                </v-btn>
               </v-card-title>
               <v-card-text class="pa-1">
                 <template v-if="inputMethod === 'Ellipsoid Equation'">
                   <v-row dense>
                     <v-col cols="6">
-                      <v-text-field v-model="kidneyLeft.sagittal" label="Left Kidney Sagittal Length (mm)" type="number" dense outlined density="compact" />
-                      <v-text-field v-model="kidneyLeft.coronal" label="Left Kidney Coronal Length (mm)" type="number" dense outlined density="compact" />
-                      <v-text-field v-model="kidneyLeft.width" label="Left Kidney Width (mm)" type="number" dense outlined density="compact" />
-                      <v-text-field v-model="kidneyLeft.depth" label="Left Kidney Depth (mm)" type="number" dense outlined density="compact" />
+                      <v-text-field
+                        v-model="kidneyLeft.sagittal"
+                        label="Left Kidney Sagittal Length (mm)"
+                        type="number"
+                        dense
+                        outlined
+                        density="compact"
+                        aria-label="Left Kidney Sagittal Length"
+                      />
+                      <v-text-field
+                        v-model="kidneyLeft.coronal"
+                        label="Left Kidney Coronal Length (mm)"
+                        type="number"
+                        dense
+                        outlined
+                        density="compact"
+                        aria-label="Left Kidney Coronal Length"
+                      />
+                      <v-text-field
+                        v-model="kidneyLeft.width"
+                        label="Left Kidney Width (mm)"
+                        type="number"
+                        dense
+                        outlined
+                        density="compact"
+                        aria-label="Left Kidney Width"
+                      />
+                      <v-text-field
+                        v-model="kidneyLeft.depth"
+                        label="Left Kidney Depth (mm)"
+                        type="number"
+                        dense
+                        outlined
+                        density="compact"
+                        aria-label="Left Kidney Depth"
+                      />
                     </v-col>
                     <v-col cols="6">
-                      <v-text-field v-model="kidneyRight.sagittal" label="Right Kidney Sagittal Length (mm)" type="number" dense outlined density="compact" />
-                      <v-text-field v-model="kidneyRight.coronal" label="Right Kidney Coronal Length (mm)" type="number" dense outlined density="compact" />
-                      <v-text-field v-model="kidneyRight.width" label="Right Kidney Width (mm)" type="number" dense outlined density="compact" />
-                      <v-text-field v-model="kidneyRight.depth" label="Right Kidney Depth (mm)" type="number" dense outlined density="compact"/>
+                      <v-text-field
+                        v-model="kidneyRight.sagittal"
+                        label="Right Kidney Sagittal Length (mm)"
+                        type="number"
+                        dense
+                        outlined
+                        density="compact"
+                        aria-label="Right Kidney Sagittal Length"
+                      />
+                      <v-text-field
+                        v-model="kidneyRight.coronal"
+                        label="Right Kidney Coronal Length (mm)"
+                        type="number"
+                        dense
+                        outlined
+                        density="compact"
+                        aria-label="Right Kidney Coronal Length"
+                      />
+                      <v-text-field
+                        v-model="kidneyRight.width"
+                        label="Right Kidney Width (mm)"
+                        type="number"
+                        dense
+                        outlined
+                        density="compact"
+                        aria-label="Right Kidney Width"
+                      />
+                      <v-text-field
+                        v-model="kidneyRight.depth"
+                        label="Right Kidney Depth (mm)"
+                        type="number"
+                        dense
+                        outlined
+                        density="compact"
+                        aria-label="Right Kidney Depth"
+                      />
                     </v-col>
                   </v-row>
                 </template>
@@ -134,6 +240,7 @@
                     dense
                     outlined
                     density="compact"
+                    aria-label="Total Kidney Volume"
                   />
                 </template>
               </v-card-text>
@@ -143,19 +250,43 @@
             <v-card class="small-card pa-1" outlined>
               <v-card-title class="d-flex justify-space-between">
                 <span>
-                  <v-icon :color="isPROPKDScoreCalculated ? 'green' : 'red'" class="mr-2">mdi-numeric-3-circle-outline</v-icon>
-                  PROPKD
+                  <v-icon :color="isPROPKDScoreCalculated ? 'green' : 'red'" class="mr-2" aria-hidden="true">mdi-numeric-3-circle-outline</v-icon>
+                  <span aria-label="PROPKD Score Section">PROPKD</span>
                 </span>
-                <v-btn small color="primary" @click="calculatePROPKDScore" density="compact">Calculate</v-btn>
+                <v-btn small color="primary" @click="calculatePROPKDScore" density="compact" aria-label="Calculate PROPKD Score">
+                  Calculate
+                </v-btn>
               </v-card-title>
               <v-card-text class="pa-1">
-                <v-select v-model="mutationClass" :items="mutationClasses" label="Mutation Class" dense outlined density="compact" />
+                <v-select
+                  v-model="mutationClass"
+                  :items="mutationClasses"
+                  label="Mutation Class"
+                  dense
+                  outlined
+                  density="compact"
+                  aria-label="Mutation Class"
+                />
                 <v-row dense>
                   <v-col cols="6">
-                    <v-checkbox v-model="hypertension" label="Hypertension before age 35" dense outlined density="compact" />
+                    <v-checkbox
+                      v-model="hypertension"
+                      label="Hypertension before age 35"
+                      dense
+                      outlined
+                      density="compact"
+                      aria-label="Hypertension before age 35"
+                    />
                   </v-col>
                   <v-col cols="6">
-                    <v-checkbox v-model="firstUrologicalEvent" label="First urological event before age 35" dense outlined density="compact" />
+                    <v-checkbox
+                      v-model="firstUrologicalEvent"
+                      label="First urological event before age 35"
+                      dense
+                      outlined
+                      density="compact"
+                      aria-label="First urological event before age 35"
+                    />
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -200,7 +331,7 @@
         </v-row>
 
         <!-- Moved the Alert to the Bottom -->
-        <v-alert v-if="errorMessage" type="error" outlined class="mt-3">
+        <v-alert v-if="errorMessage" type="error" outlined class="mt-3" aria-live="assertive">
           {{ errorMessage }}
         </v-alert>
       </v-container>
@@ -446,25 +577,33 @@ export default {
 .app-title {
   font-size: 22px;
   font-weight: bold;
-  margin: 0; /* Removing default margin */
+  color: #ffffff; /* Improved contrast for dark theme */
 }
 
-/* Styles for the version number */
 .app-version {
-  font-size: 0.8em; /* Smaller font size */
-  color: #666; /* Lighter text color */
-  font-weight: normal; /* Less emphasis compared to the title */
-  padding-left: 10px; /* Space between title and version number */
+  color: #e0e0e0; /* Light contrast for version text */
 }
 
-/* Styles for the application logo */
+/* Styling for buttons */
+.v-btn {
+  background-color: #0056b3;
+  color: white;
+}
+
+/* Button hover state */
+.v-btn:hover {
+  background-color: #004085;
+  color: white;
+}
+
+/* Logo styling */
 .app-logo {
-  max-width: 48px; /* Fixed maximum width */
-  margin-right: 20px; /* Spacing between logo and title */
+  max-width: 48px;
+  margin-right: 20px;
   animation: fadeIn 2s ease-out forwards;
 }
 
-/* Animation for the logo */
+/* Logo hover animation */
 .app-logo:hover {
   animation: pulse 2s infinite;
 }
