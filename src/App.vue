@@ -330,10 +330,40 @@
           </v-col>
         </v-row>
 
-        <!-- Moved the Alert to the Bottom -->
+        <!-- Alert for missing data -->
         <v-alert v-if="errorMessage" type="error" outlined class="mt-3" aria-live="assertive">
           {{ errorMessage }}
         </v-alert>
+
+        <!-- Acknowledgment message -->
+        <v-alert
+          v-if="disclaimerAcknowledged && !showModal"
+          type="info"
+          dismissible
+          aria-live="polite"
+          class="disclaimer-acknowledgment"
+        >
+          Disclaimer acknowledged on this device at: {{ acknowledgmentTime }}.
+          <v-btn text @click="reopenModal">View Disclaimer</v-btn>
+        </v-alert>
+
+        <!-- Modal for Disclaimer -->
+        <v-dialog v-model="showModal" persistent max-width="500">
+          <v-card>
+            <v-card-title>Disclaimer</v-card-title>
+            <v-card-text>
+              <section v-for="(section, index) in disclaimerSections" :key="index">
+                <h3>{{ section.title }}</h3>
+                <p v-html="section.content" />
+              </section>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="closeModal">I Acknowledge</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
       </v-container>
     </v-main>
   </v-app>
@@ -401,6 +431,20 @@ export default {
         v => !!v || 'Age is required',
         v => (v >= 20 && v <= 80) || 'Age must be between 20 and 80',
       ],
+      // Disclaimer modal data
+      showModal: !localStorage.getItem('disclaimerAcknowledged'),
+      disclaimerAcknowledged: !!localStorage.getItem('disclaimerAcknowledged'),
+      acknowledgmentTime: localStorage.getItem('acknowledgmentTime') || null,
+      disclaimerSections: [
+        {
+          title: "Important Information",
+          content: "The ADPKD Risk Calculator is intended for educational and research purposes only. It is not a substitute for professional medical advice and should not be used for clinical decision-making."
+        },
+        {
+          title: "Usage Guidelines",
+          content: "The results provided by this tool should not be used as a basis for diagnosis or treatment without consulting a healthcare professional."
+        }
+      ]
     };
   },
   computed: {
@@ -536,7 +580,18 @@ export default {
       this.propkdScore = Number(sexScore + mutationScore + hypertensionScore + urologicalEventScore) || 0;
       this.errorMessage = null; // Clear error message after successful calculation
     },
-  },
+    closeModal() {
+      this.showModal = false;
+      this.disclaimerAcknowledged = true;
+      const currentTime = new Date().toLocaleString();
+      this.acknowledgmentTime = currentTime;
+      localStorage.setItem('disclaimerAcknowledged', 'true');
+      localStorage.setItem('acknowledgmentTime', currentTime);
+    },
+    reopenModal() {
+      this.showModal = true;
+    }
+  }
 };
 </script>
 
@@ -606,5 +661,13 @@ export default {
 /* Logo hover animation */
 .app-logo:hover {
   animation: pulse 2s infinite;
+}
+
+/* Disclaimer acknowledgment message */
+.disclaimer-acknowledgment {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
 }
 </style>
