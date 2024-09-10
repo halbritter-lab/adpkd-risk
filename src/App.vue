@@ -11,7 +11,9 @@
         <h1 class="app-title">
           ADPKD Risk
         </h1>
-        <span class="app-version" aria-label="Version {{ version }}">v{{ version }}</span>
+        <span class="app-version" aria-label="Version {{ version }}">
+          v{{ version }}-<span v-if="!fetchError">{{ lastCommitHash }}</span><span v-else>offline</span>
+        </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
@@ -422,6 +424,8 @@ export default {
   data() {
     return {
       version: packageInfo.version, // Load version from package.json
+      lastCommitHash: 'loading...', // Initialize lastCommitHash
+      fetchError: false, // Initialize fetchError to track API status
       selectedTab: 'mayoPropkd',
       patientId: null,
       age: null,
@@ -503,6 +507,22 @@ export default {
     },
   },
   methods: {
+    async fetchLastCommit() {
+      try {
+        const response = await fetch('https://api.github.com/repos/halbritter-lab/adpkd-risk/commits?per_page=1');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        if (data.length) {
+          this.lastCommitHash = data[0].sha.substring(0, 7); // Display only the first 7 characters of the hash
+        }
+      } catch (error) {
+        console.error('Error fetching last commit hash:', error);
+        this.fetchError = true; // Update error state
+        this.lastCommitHash = 'offline'; // Show 'offline' when there's an error
+      }
+    },
     toggleTheme() {
       this.isDark = !this.isDark;
     },
@@ -642,6 +662,9 @@ export default {
     closeFAQ() {
       this.showFAQModal = false;
     },
+  },
+  async mounted() {
+    this.fetchLastCommit(); // Call to fetch the last commit hash when the component is mounted
   },
 };
 </script>
