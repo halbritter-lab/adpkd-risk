@@ -71,10 +71,13 @@ The combined risk categories provide a deeper insight into the patient's conditi
 | Mayo Risk      | PROPKD Risk    | Combined Risk Category  |
 |----------------|----------------|-------------------------|
 | Low            | Low            | Low-Low                 |
-| Low            | Intermediate    | Low-Intermediate         |
+| Low            | Intermediate   | Intermediate-Low        |
 | Low            | High           | Low-High                |
-| Intermediate   | Intermediate    | Intermediate-Intermediate |
+| Intermediate   | Low            | Intermediate-Low        |
+| Intermediate   | Intermediate   | Intermediate-Intermediate |
 | Intermediate   | High           | Intermediate-High       |
+| High           | Low            | Low-High                |
+| High           | Intermediate   | Intermediate-High       |
 | High           | High           | High-High               |
 
 For more information about the methodology, refer to the papers and publications linked below.
@@ -96,6 +99,7 @@ For more information about the methodology, refer to the papers and publications
 
 - <https://github.com/ConstantinWolff>
 - <https://orcid.org/0000-0002-3277-4559>
+- <https://scholar.google.com/citations?user=RcpLQnkAAAAJ>
 
 **Jan Halbritter**
 
