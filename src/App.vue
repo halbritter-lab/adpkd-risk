@@ -353,8 +353,9 @@
           aria-live="polite"
           class="disclaimer-acknowledgment"
         >
-          Disclaimer acknowledged on this device at: {{ acknowledgmentTime }}.
-          <v-btn text @click="reopenModal">View Disclaimer</v-btn>
+          <div class="disclaimer-content">
+            <v-btn small outlined @click="reopenModal" class="small-btn" density="compact">Disclaimer acknowledged: {{ acknowledgmentTime }}</v-btn>
+          </div>
         </v-alert>
 
         <!-- Modal for Disclaimer -->
@@ -369,7 +370,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" @click="closeModal">I Acknowledge</v-btn>
+              <v-btn @click="closeModal">I Acknowledge</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -647,10 +648,13 @@ export default {
     closeModal() {
       this.showModal = false;
       this.disclaimerAcknowledged = true;
-      const currentTime = new Date().toLocaleString();
-      this.acknowledgmentTime = currentTime;
+
+      // Format the current time to only show date
+      const currentDate = new Date().toLocaleDateString(); // Only the date part
+      this.acknowledgmentTime = currentDate;
+
       localStorage.setItem('disclaimerAcknowledged', 'true');
-      localStorage.setItem('acknowledgmentTime', currentTime);
+      localStorage.setItem('acknowledgmentTime', currentDate);
     },
     reopenModal() {
       this.showModal = true;
@@ -737,11 +741,28 @@ export default {
   animation: pulse 2s infinite;
 }
 
-/* Disclaimer acknowledgment message */
+/* Styling for the disclaimer acknowledgment */
 .disclaimer-acknowledgment {
   position: fixed;
   bottom: 0;
-  width: 100%;
+  right: 0;
+  width: auto;
+  max-width: 250px; /* Smaller width to make it more compact */
   z-index: 1000;
+  padding: 2px;
+  font-size: 8px; /* Reduced font size for smaller text */
+}
+
+.disclaimer-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Align content to the right */
+}
+
+/* Styling for the much smaller button */
+.small-btn {
+  font-size: 8px; /* Smaller font for the button */
+  padding: 1px 2px; /* Reduced padding to make the button compact */
+  min-width: auto; /* Remove the default minimum button width */
 }
 </style>
