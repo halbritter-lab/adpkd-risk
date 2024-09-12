@@ -1,46 +1,14 @@
 <template>
   <v-app :theme="isDark ? 'dark' : 'light'">
-    <v-toolbar color="secondary" dark>
-      <img
-        src="/logo.webp"
-        alt="ADPKD-Risk Logo"
-        class="mx-2 app-logo"
-        aria-label="ADPKD Risk Calculator Logo"
-      />
-      <v-toolbar-title class="d-flex align-center mx-0">
-        <h1 class="app-title">
-          ADPKD Risk
-        </h1>
-        <span class="app-version" aria-label="Version {{ version }}">
-          v{{ version }}-<span v-if="!fetchError">{{ lastCommitHash }}</span><span v-else>offline</span>
-        </span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-
-      <!-- Reset Button -->
-      <v-btn icon @click="resetForm" aria-label="Reset Form">
-        <v-icon>mdi-refresh</v-icon>
-        <v-tooltip activator="parent" location="bottom">
-          Reset Form
-        </v-tooltip>
-      </v-btn>
-
-      <!-- Theme Toggle Button -->
-      <v-btn icon @click="toggleTheme" :aria-label="isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'">
-        <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
-        <v-tooltip activator="parent" location="bottom">
-          {{ isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme' }}
-        </v-tooltip>
-      </v-btn>
-
-      <!-- FAQ Button -->
-      <v-btn icon @click="openFAQ" aria-label="Open FAQ">
-        <v-icon>mdi-help-circle</v-icon>
-        <v-tooltip activator="parent" location="bottom">
-          How to Use & FAQ
-        </v-tooltip>
-      </v-btn>
-    </v-toolbar>
+    <MenuBar
+      :version="version"
+      :lastCommitHash="lastCommitHash"
+      :fetchError="fetchError"
+      :isDark="isDark"
+      @toggle-theme="toggleTheme"
+      @reset-form="resetForm"
+      @open-faq="openFAQ"
+    />
 
     <v-main>
       <v-container>
@@ -401,13 +369,14 @@
 
 <script>
 import packageInfo from '../package.json'; // Import the package.json file
+import MenuBar from './components/MenuBar.vue';
 import LineChart from './components/LineChart.vue';
 import PROPKDChart from './components/PROPKDChart.vue';
 import MayoVsPROPKDChart from './components/MayoVsPROPKDChart.vue';
 import TextMixin from './mixins/TextMixin.js'; // Import the TextMixin
 
 export default {
-  components: { LineChart, PROPKDChart, MayoVsPROPKDChart },
+  components: { MenuBar, LineChart, PROPKDChart, MayoVsPROPKDChart },
   mixins: [TextMixin], // Integrating the TextMixin
   data() {
     return {
