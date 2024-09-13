@@ -26,9 +26,9 @@ export default class Patient {
     this.firstUrologicalEvent = false;
 
     // Calculated properties
-    this.mayoScore = 1;
-    this.propkdScore = 0;
-    this.mayoClass = 'low';
+    this.mayoScore = null;
+    this.propkdScore = null;
+    this.mayoClass = null;
   }
 
   // Method to calculate HtTKV

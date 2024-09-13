@@ -363,6 +363,9 @@
               </v-tabs-window>
             </v-card>
           </v-col>
+          <v-col cols="12">
+            <PatientOverview :patient="patient" />
+          </v-col>
         </v-row>
 
         <!-- Alert for missing data -->
@@ -382,11 +385,12 @@ import MenuBar from './components/MenuBar.vue';
 import LineChart from './components/LineChart.vue';
 import PROPKDChart from './components/PROPKDChart.vue';
 import MayoVsPROPKDChart from './components/MayoVsPROPKDChart.vue';
+import PatientOverview from './components/PatientOverview.vue';
 import Patient from './models/Patient'; // Import the Patient class
 import TextMixin from './mixins/TextMixin.js'; // Import the TextMixin
 
 export default {
-  components: { MenuBar, LineChart, PROPKDChart, MayoVsPROPKDChart },
+  components: { MenuBar, LineChart, PROPKDChart, MayoVsPROPKDChart, PatientOverview },
   mixins: [TextMixin], // Integrating the TextMixin
   data() {
     return {
@@ -410,9 +414,8 @@ export default {
         ],
       },
       isDark: false,
-      mayoScore: 1, // Set a default valid score
+      mayoScore: 1,
       propkdScore: 0,
-      mayoClass: 'low',
       errorMessage: null, // To display validation errors
       // Kidney volume variables
       rightKidneyVolume: null,
