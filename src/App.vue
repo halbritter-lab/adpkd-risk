@@ -375,6 +375,7 @@ import PROPKDChart from './components/PROPKDChart.vue';
 import MayoVsPROPKDChart from './components/MayoVsPROPKDChart.vue';
 import Patient from './models/Patient'; // Import the Patient class
 import TextMixin from './mixins/TextMixin.js'; // Import the TextMixin
+import formulasConfig from './config/formulasConfig.json'; // Import the formulasConfig.json
 
 export default {
   components: { MenuBar, LineChart, PROPKDChart, MayoVsPROPKDChart },
@@ -453,11 +454,24 @@ export default {
     toggleTheme() {
       this.isDark = !this.isDark;
     },
-    getMayoClass(volume) {
-      if (volume < 233.695) return 'low';
-      if (volume < 290.292) return 'intermediate';
-      if (volume < 359.484) return 'high';
-      return 'very high';
+    getMayoClass(htAdjustedTKV, patientAge) {
+      const mayoClasses = formulasConfig.mayoClasses;
+
+      // Start from the highest class and check downward
+      if (htAdjustedTKV >= this.calculateY(mayoClasses.class1E.slope, mayoClasses.class1E.intercept, patientAge)) {
+        return 'class1E';
+      } else if (htAdjustedTKV >= this.calculateY(mayoClasses.class1D.slope, mayoClasses.class1D.intercept, patientAge)) {
+        return 'class1D';
+      } else if (htAdjustedTKV >= this.calculateY(mayoClasses.class1C.slope, mayoClasses.class1C.intercept, patientAge)) {
+        return 'class1C';
+      } else if (htAdjustedTKV >= this.calculateY(mayoClasses.class1B.slope, mayoClasses.class1B.intercept, patientAge)) {
+        return 'class1B';
+      }
+      
+      return 'class1A'; // If none of the above, assign class 1A
+    },
+    calculateY(slope, intercept, x) {
+      return Math.pow(10, slope * x + intercept);
     },
     validateStep1() {
       if (!this.isStep1Valid) {
@@ -481,8 +495,8 @@ export default {
       try {
         console.log("Before HtTKV Calculation:", this.patient);
 
-        // Calculate HtTKV using the Patient class method
-        const htAdjustedTKV = this.patient.calculateHtTKV(); // Use this return value for the Y-axis
+        // Pass the Mayo class calculator method and patient age when calculating HtTKV
+        const htAdjustedTKV = this.patient.calculateHtTKV((htk) => this.getMayoClass(htk, this.patient.age));
 
         console.log("After HtTKV Calculation:", htAdjustedTKV, this.patient.mayoClass);
 
@@ -495,7 +509,7 @@ export default {
 
         console.log("New Data Point:", newDataPoint);
 
-        // Check if the patientId already exists in the dataset and update the data point
+        // Update the chart data
         const clonedChartData = JSON.parse(JSON.stringify(this.chartData));
         const existingIndex = clonedChartData.datasets[0].data.findIndex(
           point => point.patientId === this.patient.patientId
