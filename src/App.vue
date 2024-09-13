@@ -27,7 +27,7 @@
                 <v-row dense>
                   <v-col cols="12" sm="2" md="2">
                     <v-text-field
-                      v-model="patientId"
+                      v-model="patient.patientId"
                       label="Patient ID"
                       required
                       dense
@@ -38,7 +38,7 @@
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-text-field
-                      v-model="age"
+                      v-model="patient.age"
                       label="Age"
                       type="number"
                       :rules="ageRules"
@@ -51,7 +51,7 @@
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-text-field
-                      v-model="height"
+                      v-model="patient.height"
                       label="Height (m)"
                       type="number"
                       step="0.01"
@@ -66,7 +66,7 @@
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-select
-                      v-model="sex"
+                      v-model="patient.sex"
                       :items="['Male', 'Female']"
                       label="Sex"
                       required
@@ -78,7 +78,7 @@
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-select
-                      v-model="familyHistory"
+                      v-model="patient.familyHistory"
                       :items="['Positive', 'Negative']"
                       label="Family History"
                       dense
@@ -89,7 +89,7 @@
                   </v-col>
                   <v-col cols="12" sm="2" md="2">
                     <v-select
-                      v-model="ethnicity"
+                      v-model="patient.ethnicity"
                       :items="ethnicityOptions"
                       label="Ethnicity"
                       dense
@@ -132,7 +132,7 @@
                   <v-row dense>
                     <v-col cols="6">
                       <v-text-field
-                        v-model="kidneyLeft.sagittal"
+                        v-model="patient.kidneyLeft.sagittal"
                         label="Left Kidney Sagittal Length (mm)"
                         type="number"
                         dense
@@ -141,7 +141,7 @@
                         aria-label="Left Kidney Sagittal Length"
                       />
                       <v-text-field
-                        v-model="kidneyLeft.coronal"
+                        v-model="patient.kidneyLeft.coronal"
                         label="Left Kidney Coronal Length (mm)"
                         type="number"
                         dense
@@ -150,7 +150,7 @@
                         aria-label="Left Kidney Coronal Length"
                       />
                       <v-text-field
-                        v-model="kidneyLeft.width"
+                        v-model="patient.kidneyLeft.width"
                         label="Left Kidney Width (mm)"
                         type="number"
                         dense
@@ -159,7 +159,7 @@
                         aria-label="Left Kidney Width"
                       />
                       <v-text-field
-                        v-model="kidneyLeft.depth"
+                        v-model="patient.kidneyLeft.depth"
                         label="Left Kidney Depth (mm)"
                         type="number"
                         dense
@@ -170,7 +170,7 @@
                     </v-col>
                     <v-col cols="6">
                       <v-text-field
-                        v-model="kidneyRight.sagittal"
+                        v-model="patient.kidneyRight.sagittal"
                         label="Right Kidney Sagittal Length (mm)"
                         type="number"
                         dense
@@ -179,7 +179,7 @@
                         aria-label="Right Kidney Sagittal Length"
                       />
                       <v-text-field
-                        v-model="kidneyRight.coronal"
+                        v-model="patient.kidneyRight.coronal"
                         label="Right Kidney Coronal Length (mm)"
                         type="number"
                         dense
@@ -188,7 +188,7 @@
                         aria-label="Right Kidney Coronal Length"
                       />
                       <v-text-field
-                        v-model="kidneyRight.width"
+                        v-model="patient.kidneyRight.width"
                         label="Right Kidney Width (mm)"
                         type="number"
                         dense
@@ -197,7 +197,7 @@
                         aria-label="Right Kidney Width"
                       />
                       <v-text-field
-                        v-model="kidneyRight.depth"
+                        v-model="patient.kidneyRight.depth"
                         label="Right Kidney Depth (mm)"
                         type="number"
                         dense
@@ -210,7 +210,7 @@
                 </template>
                 <template v-else>
                   <v-text-field
-                    v-model="kidneyVolume"
+                    v-model="patient.kidneyVolume"
                     label="Total Kidney Volume (mL)"
                     type="number"
                     :min="0"
@@ -237,7 +237,7 @@
               </v-card-title>
               <v-card-text class="pa-1">
                 <v-select
-                  v-model="mutationClass"
+                  v-model="patient.mutationClass"
                   :items="mutationClasses"
                   label="Mutation Class"
                   dense
@@ -248,7 +248,7 @@
                 <v-row dense>
                   <v-col cols="6">
                     <v-checkbox
-                      v-model="hypertension"
+                      v-model="patient.hypertension"
                       label="Hypertension before age 35"
                       dense
                       outlined
@@ -258,7 +258,7 @@
                   </v-col>
                   <v-col cols="6">
                     <v-checkbox
-                      v-model="firstUrologicalEvent"
+                      v-model="patient.firstUrologicalEvent"
                       label="First urological event before age 35"
                       dense
                       outlined
@@ -373,6 +373,7 @@ import MenuBar from './components/MenuBar.vue';
 import LineChart from './components/LineChart.vue';
 import PROPKDChart from './components/PROPKDChart.vue';
 import MayoVsPROPKDChart from './components/MayoVsPROPKDChart.vue';
+import Patient from './models/Patient'; // Import the Patient class
 import TextMixin from './mixins/TextMixin.js'; // Import the TextMixin
 
 export default {
@@ -384,35 +385,14 @@ export default {
       lastCommitHash: 'loading...', // Initialize lastCommitHash
       fetchError: false, // Initialize fetchError to track API status
       selectedTab: 'mayoPropkd',
-      patientId: null,
-      age: null,
-      height: null,
-      sex: null,
-      familyHistory: null,
-      ethnicity: null,
-      kidneyVolume: null,
+      patient: new Patient(), // Initialize a new Patient object
+      ethnicityOptions: ['AA', 'O'],
       inputMethod: 'Stereology Method',
-      kidneyRight: {
-        sagittal: null,
-        coronal: null,
-        width: null,
-        depth: null,
-      },
-      kidneyLeft: {
-        sagittal: null,
-        coronal: null,
-        width: null,
-        depth: null,
-      },
-      mutationClass: null,
-      hypertension: false,
-      firstUrologicalEvent: false,
       mutationClasses: [
         'PKD2 mutation',
         'Nontruncating PKD1 mutation',
         'Truncating PKD1 mutation',
       ],
-      ethnicityOptions: ['AA', 'O'],
       chartData: {
         datasets: [
           {
@@ -444,13 +424,13 @@ export default {
   },
   computed: {
     isStep1Valid() {
-      return this.patientId && this.age && this.height && this.sex;
+      return this.patient.patientId && this.patient.age && this.patient.height && this.patient.sex;
     },
     isMayoScoreCalculated() {
-      return this.mayoScore > 1;
+      return this.patient.mayoScore > 1;
     },
     isPROPKDScoreCalculated() {
-      return this.propkdScore > 0;
+      return this.patient.propkdScore > 0;
     },
   },
   methods: {
@@ -488,108 +468,79 @@ export default {
       return true;
     },
     resetForm() {
-      // Reset all form fields to their initial state
-      this.patientId = null;
-      this.age = null;
-      this.height = null;
-      this.sex = null;
-      this.familyHistory = null;
-      this.ethnicity = null;
-      this.kidneyVolume = null;
-      this.inputMethod = 'Stereology Method';
-      this.kidneyRight = {
-        sagittal: null,
-        coronal: null,
-        width: null,
-        depth: null,
-      };
-      this.kidneyLeft = {
-        sagittal: null,
-        coronal: null,
-        width: null,
-        depth: null,
-      };
-      this.mutationClass = null;
-      this.hypertension = false;
-      this.firstUrologicalEvent = false;
-      this.mayoScore = 1;
-      this.propkdScore = 0;
-      this.chartData.datasets[0].data = [];
+      this.patient = new Patient(); // Reset the patient data to a new instance
       this.errorMessage = null;
       this.selectedTab = 'mayoPropkd'; // Reset to the first tab
     },
     calculateHtTKV() {
       if (!this.validateStep1()) {
+        console.log("Step 1 validation failed.");
         return;
       }
 
-      let totalVolume = 0;
+      try {
+        console.log("Before HtTKV Calculation:", this.patient);
 
-      if (this.inputMethod === 'Ellipsoid Equation') {
-        if (
-          !this.kidneyRight.sagittal ||
-          !this.kidneyRight.coronal ||
-          !this.kidneyRight.width ||
-          !this.kidneyRight.depth ||
-          !this.kidneyLeft.sagittal ||
-          !this.kidneyLeft.coronal ||
-          !this.kidneyLeft.width ||
-          !this.kidneyLeft.depth
-        ) {
-          this.errorMessage = 'Please enter valid kidney dimensions for both kidneys.';
-          return;
+        // Calculate HtTKV using the Patient class method
+        const htAdjustedTKV = this.patient.calculateHtTKV(); // Use this return value for the Y-axis
+
+        console.log("After HtTKV Calculation:", htAdjustedTKV, this.patient.mayoClass);
+
+        const newDataPoint = {
+          x: this.patient.age, // X-axis: Patient age
+          y: htAdjustedTKV,    // Y-axis: HtTKV
+          patientId: this.patient.patientId,
+          mayoClass: this.patient.mayoClass,
+        };
+
+        console.log("New Data Point:", newDataPoint);
+
+        // Check if the patientId already exists in the dataset and update the data point
+        const clonedChartData = JSON.parse(JSON.stringify(this.chartData));
+        const existingIndex = clonedChartData.datasets[0].data.findIndex(
+          point => point.patientId === this.patient.patientId
+        );
+
+        if (existingIndex !== -1) {
+          // Update existing data point
+          clonedChartData.datasets[0].data[existingIndex] = newDataPoint;
+        } else {
+          // Add new data point if patientId doesn't exist
+          clonedChartData.datasets[0].data.push(newDataPoint);
         }
 
-        const rightKidneyVolume =
-          (Math.PI / 6) *
-          ((this.kidneyRight.sagittal + this.kidneyRight.coronal) / 2) *
-          this.kidneyRight.width *
-          this.kidneyRight.depth;
-        const leftKidneyVolume =
-          (Math.PI / 6) *
-          ((this.kidneyLeft.sagittal + this.kidneyLeft.coronal) / 2) *
-          this.kidneyLeft.width *
-          this.kidneyLeft.depth;
-        totalVolume = rightKidneyVolume + leftKidneyVolume;
-      } else {
-        if (!this.kidneyVolume || this.kidneyVolume <= 0) {
-          this.errorMessage = 'Please enter a valid total kidney volume.';
-          return;
-        }
-        totalVolume = this.kidneyVolume;
+        this.chartData = clonedChartData;
+
+        console.log("Updated Chart Data:", this.chartData);
+
+        this.errorMessage = null; // Clear error message after successful calculation
+      } catch (error) {
+        console.error("Error during HtTKV Calculation:", error);
+        this.errorMessage = error.message;
       }
-
-      const htAdjustedTKV = totalVolume / this.height;
-      this.mayoClass = this.getMayoClass(htAdjustedTKV);
-      this.mayoScore = Math.min(Math.max(htAdjustedTKV, 1), 5); // Ensure Mayo Score is between 1 and 5
-
-      const newDataPoint = { x: this.age, y: htAdjustedTKV, patientId: this.patientId, mayoClass: this.mayoClass };
-
-      const newChartData = { ...this.chartData };
-      newChartData.datasets = [
-        {
-          ...newChartData.datasets[0],
-          data: [...newChartData.datasets[0].data, newDataPoint],
-        },
-      ];
-
-      this.chartData = newChartData;
-      this.errorMessage = null; // Clear error message after successful calculation
     },
     calculatePROPKDScore() {
-      if (!this.sex || !this.mutationClass) {
+      if (!this.patient.sex || !this.patient.mutationClass) {
         this.errorMessage = 'Sex and Mutation Class are required to calculate PROPKD Score.';
         return;
       }
 
-      const sexScore = this.sex === 'Male' ? 1 : 0;
-      const mutationScore = this.mutationClass === 'PKD2 mutation' ? 0 :
-                            this.mutationClass === 'Nontruncating PKD1 mutation' ? 2 : 4;
-      const hypertensionScore = this.hypertension ? 2 : 0;
-      const urologicalEventScore = this.firstUrologicalEvent ? 2 : 0;
+      try {
+        console.log("Before PROPKD Calculation:", this.patient);
 
-      this.propkdScore = Number(sexScore + mutationScore + hypertensionScore + urologicalEventScore) || 0;
-      this.errorMessage = null; // Clear error message after successful calculation
+        // Use the method from the Patient class to calculate PROPKD score
+        this.patient.calculatePROPKDScore();
+
+        // Log the calculated score for debugging
+        console.log("Calculated PROPKD Score:", this.patient.propkdScore);
+
+        this.propkdScore = this.patient.propkdScore;  // Update the computed PROPKD score in the Vue data
+
+        this.errorMessage = null; // Clear any error messages
+      } catch (error) {
+        console.error("Error during PROPKD Calculation:", error);
+        this.errorMessage = error.message;
+      }
     },
     closeModal() {
       this.showModal = false;
