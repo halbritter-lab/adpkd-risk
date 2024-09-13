@@ -1,6 +1,22 @@
 <template>
-  <div>
+  <div style="position: relative;">
     <canvas ref="canvas"></canvas>
+    <!-- Download button in the top-right corner -->
+    <v-btn
+      small
+      density="compact"
+      icon
+      color="primary"
+      style="position: absolute; top: 0px; right: 0px; z-index: 5;"
+
+      @click="downloadChart"
+      aria-label="Download Chart as PNG"
+    >
+      <v-icon>mdi-download</v-icon>
+      <v-tooltip activator="parent" location="bottom">
+        Download Chart
+      </v-tooltip>
+    </v-btn>
   </div>
 </template>
 
@@ -60,6 +76,15 @@ export default {
       }
     };
 
+    const downloadChart = () => {
+      if (canvas.value) {
+        const link = document.createElement('a');
+        link.href = canvas.value.toDataURL('image/png');
+        link.download = 'chart.png';
+        link.click();
+      }
+    };
+
     watch(
       () => props.chartData,
       (newData) => {
@@ -85,6 +110,7 @@ export default {
 
     return {
       canvas,
+      downloadChart,
     };
   },
 };
@@ -94,6 +120,6 @@ export default {
 .chart-container {
   position: relative;
   width: 100%;
-  height: 400px; /* Set a default height */
+  height: 400px;
 }
 </style>

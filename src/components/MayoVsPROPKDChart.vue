@@ -1,6 +1,21 @@
 <template>
-  <div>
+  <div style="position: relative;">
     <canvas ref="canvas"></canvas>
+    <!-- Download button in the top-right corner -->
+    <v-btn
+      small
+      density="compact"
+      icon
+      color="primary"
+      style="position: absolute; top: 0px; right: 0px; z-index: 5;"
+      @click="downloadChart"
+      aria-label="Download Chart as PNG"
+    >
+      <v-icon>mdi-download</v-icon>
+      <v-tooltip activator="parent" location="bottom">
+        Download Chart
+      </v-tooltip>
+    </v-btn>
   </div>
 </template>
 
@@ -113,7 +128,6 @@ export default {
                 callback: function (value) {
                   return chartConfig.mayoVsPropkdChart.ticks.xTicks[value - 1] || '';
                 },
-                // Centering the tick labels
                 align: 'center',
                 autoSkip: false,
                 padding: 10,
@@ -139,7 +153,6 @@ export default {
                 callback: function (value) {
                   return chartConfig.mayoVsPropkdChart.ticks.yTicks[value - 1] || '';
                 },
-                // Centering the tick labels
                 align: 'center',
                 autoSkip: false,
                 padding: 10,
@@ -168,6 +181,15 @@ export default {
         },
         plugins: [backgroundPlugin],
       });
+    };
+
+    const downloadChart = () => {
+      if (canvas.value) {
+        const link = document.createElement('a');
+        link.href = canvas.value.toDataURL('image/png');
+        link.download = 'mayo_vs_propkd_chart.png';
+        link.click();
+      }
     };
 
     // Watch for prop changes
@@ -199,6 +221,7 @@ export default {
 
     return {
       canvas,
+      downloadChart,
     };
   },
 };
