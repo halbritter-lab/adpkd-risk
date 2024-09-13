@@ -207,6 +207,47 @@
                       />
                     </v-col>
                   </v-row>
+                  <!-- Display calculated kidney volumes -->
+                  <v-row dense>
+                    <v-col cols="6">
+                      <v-text-field
+                        v-model="rightKidneyVolume"
+                        label="Right Kidney Volume (mL)"
+                        dense
+                        outlined
+                        density="compact"
+                        readonly
+                        aria-label="Right Kidney Volume"
+                      />
+                    </v-col>
+                    <v-col cols="6">
+                      <v-text-field
+                        v-model="leftKidneyVolume"
+                        label="Left Kidney Volume (mL)"
+                        dense
+                        outlined
+                        density="compact"
+                        readonly
+                        aria-label="Left Kidney Volume"
+                      />
+                    </v-col>
+                  </v-row>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="totalKidneyVolume"
+                        label="Total Kidney Volume (mL)"
+                        dense
+                        outlined
+                        density="compact"
+                        readonly
+                        aria-label="Total Kidney Volume"
+                      />
+                    </v-col>
+                  </v-row>
+                  <v-btn small color="primary" @click="calculateVolumes" density="compact" aria-label="Calculate Volumes">
+                    Calculate Volumes
+                  </v-btn>
                 </template>
                 <template v-else>
                   <v-text-field
@@ -313,55 +354,6 @@
           {{ errorMessage }}
         </v-alert>
 
-        <!-- Acknowledgment message -->
-        <v-alert
-          v-if="disclaimerAcknowledged && !showModal"
-          type="info"
-          dismissible
-          aria-live="polite"
-          class="disclaimer-acknowledgment"
-        >
-          <div class="disclaimer-content">
-            <v-btn small outlined @click="reopenModal" class="small-btn" density="compact">Disclaimer acknowledged: {{ acknowledgmentTime }}</v-btn>
-          </div>
-        </v-alert>
-
-        <!-- Modal for Disclaimer -->
-        <v-dialog v-model="showModal" persistent max-width="500">
-          <v-card>
-            <v-card-title>Disclaimer</v-card-title>
-            <v-card-text>
-              <section v-for="(section, index) in disclaimerSections" :key="index">
-                <h3>{{ section.title }}</h3>
-                <p v-html="section.content"></p>
-              </section>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn @click="closeModal">I Acknowledge</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <!-- Modal for FAQ -->
-        <v-dialog v-model="showFAQModal" persistent max-width="600">
-          <v-card>
-            <v-card-title>Frequently Asked Questions (FAQ)</v-card-title>
-            <v-card-text>
-              <ul>
-                <li v-for="(faq, index) in faqContent" :key="index">
-                  <h4>{{ faq.question }}</h4>
-                  <p>{{ faq.answer }}</p>
-                </li>
-              </ul>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn @click="closeFAQ">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
       </v-container>
     </v-main>
   </v-app>
@@ -415,6 +407,10 @@ export default {
         v => !!v || 'Age is required',
         v => (v >= 20 && v <= 80) || 'Age must be between 20 and 80',
       ],
+      // Kidney volume variables
+      rightKidneyVolume: null,
+      leftKidneyVolume: null,
+      totalKidneyVolume: null,
       // Disclaimer modal data
       showModal: !localStorage.getItem('disclaimerAcknowledged'),
       disclaimerAcknowledged: !!localStorage.getItem('disclaimerAcknowledged'),
@@ -493,12 +489,8 @@ export default {
       }
 
       try {
-        console.log("Before HtTKV Calculation:", this.patient);
-
         // Pass the Mayo class calculator method and patient age when calculating HtTKV
         const htAdjustedTKV = this.patient.calculateHtTKV((htk) => this.getMayoClass(htk, this.patient.age));
-
-        console.log("After HtTKV Calculation:", htAdjustedTKV, this.patient.mayoClass);
 
         const newDataPoint = {
           x: this.patient.age, // X-axis: Patient age
@@ -506,8 +498,6 @@ export default {
           patientId: this.patient.patientId,
           mayoClass: this.patient.mayoClass,
         };
-
-        console.log("New Data Point:", newDataPoint);
 
         // Update the chart data
         const clonedChartData = JSON.parse(JSON.stringify(this.chartData));
@@ -525,11 +515,53 @@ export default {
 
         this.chartData = clonedChartData;
 
-        console.log("Updated Chart Data:", this.chartData);
-
         this.errorMessage = null; // Clear error message after successful calculation
       } catch (error) {
         console.error("Error during HtTKV Calculation:", error);
+        this.errorMessage = error.message;
+      }
+    },
+    calculateVolumes() {
+      try {
+        // Fetch input values for right and left kidneys using correct object structure
+        const rSagittalLength = parseFloat(this.patient.kidneyRight.sagittal) || 0;
+        const rCoronalLength = parseFloat(this.patient.kidneyRight.coronal) || 0;
+        const rWidth = parseFloat(this.patient.kidneyRight.width) || 0;
+        const rDepth = parseFloat(this.patient.kidneyRight.depth) || 0;
+
+        const lSagittalLength = parseFloat(this.patient.kidneyLeft.sagittal) || 0;
+        const lCoronalLength = parseFloat(this.patient.kidneyLeft.coronal) || 0;
+        const lWidth = parseFloat(this.patient.kidneyLeft.width) || 0;
+        const lDepth = parseFloat(this.patient.kidneyLeft.depth) || 0;
+
+        // Check if all required inputs are provided
+        if (!(rSagittalLength && rCoronalLength && rWidth && rDepth && lSagittalLength && lCoronalLength && lWidth && lDepth)) {
+          throw new Error("All fields for length, width, and depth must have valid numeric values.");
+        }
+
+        // Average lengths for right and left kidneys
+        const rightLength = (rSagittalLength + rCoronalLength) / 2;
+        const leftLength = (lSagittalLength + lCoronalLength) / 2;
+
+        // Calculate volumes using the provided formula
+        const rightKidneyVolume = Math.round(10 * (3.14159 * rightLength * rWidth * rDepth) / 6000) / 10;
+        const leftKidneyVolume = Math.round(10 * (3.14159 * leftLength * lWidth * lDepth) / 6000) / 10;
+
+        // Total kidney volume
+        const totalKidneyVolume = Math.round(10 * (rightKidneyVolume + leftKidneyVolume)) / 10;
+
+        // Store computed volumes in Vue instance data
+        this.rightKidneyVolume = rightKidneyVolume;
+        this.leftKidneyVolume = leftKidneyVolume;
+        this.totalKidneyVolume = totalKidneyVolume;
+
+        // Update patient object with calculated values
+        this.patient.kidneyRight.volume = this.rightKidneyVolume;
+        this.patient.kidneyLeft.volume = this.leftKidneyVolume;
+        this.patient.kidneyVolume = this.totalKidneyVolume;
+
+      } catch (error) {
+        console.error("Error calculating kidney volumes:", error);
         this.errorMessage = error.message;
       }
     },
@@ -540,13 +572,8 @@ export default {
       }
 
       try {
-        console.log("Before PROPKD Calculation:", this.patient);
-
         // Use the method from the Patient class to calculate PROPKD score
         this.patient.calculatePROPKDScore();
-
-        // Log the calculated score for debugging
-        console.log("Calculated PROPKD Score:", this.patient.propkdScore);
 
         this.propkdScore = this.patient.propkdScore;  // Update the computed PROPKD score in the Vue data
 
