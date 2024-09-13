@@ -6,114 +6,84 @@
 
 <script>
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import {
-  Chart as ChartJS,
-  ScatterController,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Chart as ChartJS, ScatterController, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
+import chartConfig from '../config/chartConfig.js'; // Import chartConfig.js
 
-ChartJS.register(
-  ScatterController,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(ScatterController, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 export default {
   props: {
     mayoClass: {
       type: String,
-      default: 'class1A', // Default Mayo Class if not passed
+      default: 'class1A', // Default Mayo Class
     },
     propkdScore: {
       type: Number,
-      default: 0, // Default PROPKD Score if not passed
+      default: 0, // Default PROPKD Score
     },
   },
   setup(props) {
     const canvas = ref(null);
     let chartInstance = null;
 
-    // Mapping Mayo class to risk categories
-    const mayoClassToRisk = (mayoClass) => {
-      const mayoClassMap = {
-        class1A: 'low',
-        class1B: 'low',
-        class1C: 'intermediate',
-        class1D: 'high',
-        class1E: 'high',
-      };
-      return mayoClassMap[mayoClass] || 'low';
-    };
+    // Mapping Mayo class to risk categories using chartConfig
+    const mayoClassToRisk = (mayoClass) => chartConfig.mayoVsPropkdChart.mayoClassMap[mayoClass] || 'low';
 
-    // Mapping PROPKD scores to risk categories
+    // Mapping PROPKD score to risk categories
     const propkdToRisk = (propkdScore) => {
-      if (typeof propkdScore !== 'number' || propkdScore < 0 || propkdScore > 9) {
-        console.warn('Invalid PROPKD Score:', propkdScore);
-        propkdScore = 0; // Default to low risk if invalid
+      if (propkdScore >= chartConfig.mayoVsPropkdChart.propkdScoreMap.low[0] && propkdScore <= chartConfig.mayoVsPropkdChart.propkdScoreMap.low[1]) {
+        return 'low';
       }
-      if (propkdScore >= 0 && propkdScore <= 3) return 'low';
-      if (propkdScore >= 4 && propkdScore <= 6) return 'intermediate';
+      if (propkdScore >= chartConfig.mayoVsPropkdChart.propkdScoreMap.intermediate[0] && propkdScore <= chartConfig.mayoVsPropkdChart.propkdScoreMap.intermediate[1]) {
+        return 'intermediate';
+      }
       return 'high';
     };
 
-    // Create the chart
+    // Get coordinates based on Mayo and PROPKD risks
+    const getPatientCoords = (mayoRisk, propkdRisk) => {
+      const xMap = { low: 1, intermediate: 2, high: 3 };
+      const yMap = { low: 1, intermediate: 2, high: 3 };
+      return { x: xMap[mayoRisk], y: yMap[propkdRisk] };
+    };
+
+    // Background color plugin for the grid
+    const backgroundPlugin = {
+      id: 'backgroundPlugin',
+      beforeDraw: (chart) => {
+        const { ctx, scales: { x, y } } = chart;
+        ctx.save();
+
+        const colors = chartConfig.mayoVsPropkdChart.riskColors;
+
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            ctx.fillStyle = colors[i][j];
+            ctx.fillRect(
+              x.getPixelForValue(j + 1) - (x.width / 6),
+              y.getPixelForValue(i + 1) - (y.height / 6),
+              x.width / 3,
+              y.height / 3
+            );
+          }
+        }
+
+        ctx.restore();
+      },
+    };
+
+    // Create chart
     const createChart = () => {
-      if (!canvas.value) {
-        console.error('Canvas element is not available'); // Debug
-        return;
-      }
+      if (!canvas.value) return;
       const ctx = canvas.value.getContext('2d');
 
       const mayoRisk = mayoClassToRisk(props.mayoClass);
       const propkdRisk = propkdToRisk(props.propkdScore);
 
-      const getPatientCoords = (mayoRisk, propkdRisk) => {
-        const xMap = { low: 1, intermediate: 2, high: 3 };
-        const yMap = { low: 1, intermediate: 2, high: 3 };
-        return { x: xMap[mayoRisk], y: yMap[propkdRisk] };
-      };
-
       const patientCoords = getPatientCoords(mayoRisk, propkdRisk);
 
-      const backgroundPlugin = {
-        id: 'backgroundPlugin',
-        beforeDraw: (chart) => {
-          const { ctx, scales: { x, y } } = chart;
-          ctx.save();
-
-          const colors = [
-            ['#E0F0DD', '#CDEBEC', '#CBE4E9'], // Row for low PROPKD
-            ['#CDEBEC', '#F9F6CE', '#FCECD8'], // Row for intermediate PROPKD
-            ['#CBE4E9', '#FCECD8', '#FBCAC8'], // Row for high PROPKD
-          ];
-
-          for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-              ctx.fillStyle = colors[i][j];
-              ctx.fillRect(
-                x.getPixelForValue(j + 1) - (x.width / 6),
-                y.getPixelForValue(i + 1) - (y.height / 6),
-                x.width / 3,
-                y.height / 3
-              );
-            }
-          }
-
-          ctx.restore();
-        }
-      };
-
       if (chartInstance) {
-        chartInstance.destroy(); // Destroy previous chart instance
+        chartInstance.destroy();
       }
 
       chartInstance = new ChartJS(ctx, {
@@ -123,16 +93,16 @@ export default {
             {
               label: 'Patient Data',
               data: [{ x: patientCoords.x, y: patientCoords.y }],
-              pointBackgroundColor: 'black',
-              pointBorderColor: 'black',
-              pointRadius: 10,
+              pointBackgroundColor: chartConfig.mayoVsPropkdChart.pointColor,
+              pointBorderColor: chartConfig.mayoVsPropkdChart.pointColor,
+              pointRadius: chartConfig.mayoVsPropkdChart.pointRadius,
             },
           ],
         },
         options: {
           responsive: true,
-          maintainAspectRatio: true, // Keep aspect ratio intact
-          aspectRatio: 1, // Ensure the chart is square
+          maintainAspectRatio: true,
+          aspectRatio: 1,
           scales: {
             x: {
               type: 'linear',
@@ -141,12 +111,23 @@ export default {
               ticks: {
                 stepSize: 1,
                 callback: function (value) {
-                  return ['Low', 'Intermediate', 'High'][value - 1];
+                  return chartConfig.mayoVsPropkdChart.ticks.xTicks[value - 1] || '';
                 },
+                // Centering the tick labels
+                align: 'center',
+                autoSkip: false,
+                padding: 10,
               },
               title: {
                 display: true,
-                text: 'Mayo Risk',
+                text: chartConfig.mayoVsPropkdChart.axisLabels.x,
+                font: {
+                  size: 14,
+                },
+              },
+              grid: {
+                drawBorder: true,
+                color: 'rgba(0, 0, 0, 0.1)',
               },
             },
             y: {
@@ -156,12 +137,23 @@ export default {
               ticks: {
                 stepSize: 1,
                 callback: function (value) {
-                  return ['Low', 'Intermediate', 'High'][value - 1];
+                  return chartConfig.mayoVsPropkdChart.ticks.yTicks[value - 1] || '';
                 },
+                // Centering the tick labels
+                align: 'center',
+                autoSkip: false,
+                padding: 10,
               },
               title: {
                 display: true,
-                text: 'PROPKD Risk',
+                text: chartConfig.mayoVsPropkdChart.axisLabels.y,
+                font: {
+                  size: 14,
+                },
+              },
+              grid: {
+                drawBorder: true,
+                color: 'rgba(0, 0, 0, 0.1)',
               },
             },
           },
@@ -169,9 +161,7 @@ export default {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                label: function () {
-                  return `Mayo Risk: ${mayoRisk}, PROPKD Risk: ${propkdRisk}`;
-                },
+                label: () => `Mayo Risk: ${mayoRisk}, PROPKD Risk: ${propkdRisk}`,
               },
             },
           },
@@ -180,7 +170,7 @@ export default {
       });
     };
 
-    // Watch for changes in props and update chart
+    // Watch for prop changes
     watch(
       () => [props.mayoClass, props.propkdScore],
       () => {
@@ -203,7 +193,7 @@ export default {
     onBeforeUnmount(() => {
       window.removeEventListener('resize', resizeChart);
       if (chartInstance) {
-        chartInstance.destroy(); // Cleanup chart on unmount
+        chartInstance.destroy();
       }
     });
 

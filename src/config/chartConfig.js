@@ -103,6 +103,40 @@ export default {
         },
       },
     },
+    mayoVsPropkdChart: {
+      riskColors: [
+        ['#E0F0DD', '#CDEBEC', '#CBE4E9'], // Row for low PROPKD
+        ['#CDEBEC', '#F9F6CE', '#FCECD8'], // Row for intermediate PROPKD
+        ['#CBE4E9', '#FCECD8', '#FBCAC8'], // Row for high PROPKD
+      ],
+      pointColor: 'black',
+      pointRadius: 10,
+      axisLabels: {
+        x: 'Mayo Risk',
+        y: 'PROPKD Risk',
+      },
+      ticks: {
+        xTicks: ['Low', 'Intermediate', 'High'],
+        yTicks: ['Low', 'Intermediate', 'High'],
+      },
+      mayoClassMap: {
+        class1A: 'low',
+        class1B: 'low',
+        class1C: 'intermediate',
+        class1D: 'high',
+        class1E: 'high',
+      },
+      propkdScoreMap: {
+        low: [0, 3],
+        intermediate: [4, 6],
+        high: [7, 9],
+      },
+      grid: {
+        drawOnChartArea: true, // Show the grid for both axes
+        drawTicks: false, // Hide the small tick marks
+        color: 'rgba(0, 0, 0, 0.1)', // Grid color
+      },
+    },
     propkdChart: {
       lowRiskColor: {
         backgroundColor: '#ffe599',
