@@ -12,14 +12,18 @@
 
     <v-main>
       <v-container>
-
         <!-- Step 1: Individual Information Section -->
         <v-row>
           <v-col cols="12" md="12">
             <v-card outlined class="pa-1 mb-2">
               <v-card-title>
                 <span>
-                  <v-icon :color="isStep1Valid ? 'green' : 'red'" class="mr-2" aria-hidden="true">mdi-numeric-1-circle-outline</v-icon>
+                  <v-icon
+                    :color="isStep1Valid ? config.validationIconColors.valid : config.validationIconColors.invalid"
+                    class="mr-2"
+                    aria-hidden="true"
+                    >mdi-numeric-1-circle-outline</v-icon
+                  >
                   <span aria-label="Patient Information Section">Individual</span>
                 </span>
               </v-card-title>
@@ -41,7 +45,7 @@
                       v-model="patient.age"
                       label="Age"
                       type="number"
-                      :rules="ageRules"
+                      :rules="config.age.rules"
                       dense
                       outlined
                       density="compact"
@@ -54,9 +58,9 @@
                       v-model="patient.height"
                       label="Height (m)"
                       type="number"
-                      step="0.01"
-                      min="1.4"
-                      :max="2.4"
+                      :step="config.height.step"
+                      :min="config.height.min"
+                      :max="config.height.max"
                       required
                       dense
                       outlined
@@ -90,7 +94,7 @@
                   <v-col cols="12" sm="2" md="2">
                     <v-select
                       v-model="patient.ethnicity"
-                      :items="ethnicityOptions"
+                      :items="config.ethnicityOptions"
                       label="Ethnicity"
                       dense
                       outlined
@@ -110,12 +114,17 @@
             <v-card class="equal-height-card pa-1 mb-2" outlined>
               <v-card-title class="d-flex justify-space-between align-center">
                 <span>
-                  <v-icon :color="isMayoScoreCalculated ? 'green' : 'red'" class="mr-2" aria-hidden="true">mdi-numeric-2-circle-outline</v-icon>
+                  <v-icon
+                    :color="isMayoScoreCalculated ? config.validationIconColors.valid : config.validationIconColors.invalid"
+                    class="mr-2"
+                    aria-hidden="true"
+                    >mdi-numeric-2-circle-outline</v-icon
+                  >
                   <span aria-label="Mayo Score Section">Mayo</span>
                 </span>
                 <v-select
                   v-model="inputMethod"
-                  :items="['Ellipsoid Equation', 'Stereology Method']"
+                  :items="config.inputMethods"
                   dense
                   outlined
                   hide-details
@@ -269,7 +278,12 @@
             <v-card class="small-card pa-1" outlined>
               <v-card-title class="d-flex justify-space-between">
                 <span>
-                  <v-icon :color="isPROPKDScoreCalculated ? 'green' : 'red'" class="mr-2" aria-hidden="true">mdi-numeric-3-circle-outline</v-icon>
+                  <v-icon
+                    :color="isPROPKDScoreCalculated ? config.validationIconColors.valid : config.validationIconColors.invalid"
+                    class="mr-2"
+                    aria-hidden="true"
+                    >mdi-numeric-3-circle-outline</v-icon
+                  >
                   <span aria-label="PROPKD Score Section">PROPKD</span>
                 </span>
                 <v-btn small color="primary" @click="calculatePROPKDScore" density="compact" aria-label="Calculate PROPKD Score">
@@ -279,7 +293,7 @@
               <v-card-text class="pa-1">
                 <v-select
                   v-model="patient.mutationClass"
-                  :items="mutationClasses"
+                  :items="config.mutationClasses"
                   label="Mutation Class"
                   dense
                   outlined
@@ -317,7 +331,9 @@
             <v-card outlined class="pa-2 mb-2">
               <v-tabs v-model="selectedTab" align-tabs="center">
                 <v-tab value="mayoPropkd">Mayo and PROPKD</v-tab>
-                <v-tab value="mayoVsPropkd" :disabled="!isMayoScoreCalculated || !isPROPKDScoreCalculated">Mayo vs PROPKD</v-tab>
+                <v-tab value="mayoVsPropkd" :disabled="!isMayoScoreCalculated || !isPROPKDScoreCalculated"
+                  >Mayo vs PROPKD</v-tab
+                >
               </v-tabs>
 
               <v-tabs-window v-model="selectedTab">
@@ -353,13 +369,14 @@
         <v-alert v-if="errorMessage" type="error" outlined class="mt-3" aria-live="assertive">
           {{ errorMessage }}
         </v-alert>
-
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import config from './config/appConfig.js'; // Import the config file
+import formulasConfig from './config/formulasConfig.js';
 import packageInfo from '../package.json'; // Import the package.json file
 import MenuBar from './components/MenuBar.vue';
 import LineChart from './components/LineChart.vue';
@@ -367,34 +384,28 @@ import PROPKDChart from './components/PROPKDChart.vue';
 import MayoVsPROPKDChart from './components/MayoVsPROPKDChart.vue';
 import Patient from './models/Patient'; // Import the Patient class
 import TextMixin from './mixins/TextMixin.js'; // Import the TextMixin
-import formulasConfig from './config/formulasConfig.json'; // Import the formulasConfig.json
 
 export default {
   components: { MenuBar, LineChart, PROPKDChart, MayoVsPROPKDChart },
   mixins: [TextMixin], // Integrating the TextMixin
   data() {
     return {
+      config, // Store config in the data for easy access
       version: packageInfo.version, // Load version from package.json
       lastCommitHash: 'loading...', // Initialize lastCommitHash
       fetchError: false, // Initialize fetchError to track API status
       selectedTab: 'mayoPropkd',
       patient: new Patient(), // Initialize a new Patient object
-      ethnicityOptions: ['AA', 'O'],
-      inputMethod: 'Stereology Method',
-      mutationClasses: [
-        'PKD2 mutation',
-        'Nontruncating PKD1 mutation',
-        'Truncating PKD1 mutation',
-      ],
+      inputMethod: config.inputMethods[1], // Default input method
       chartData: {
         datasets: [
           {
             label: 'Patient Data',
             data: [],
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: config.chartConfig.dataset.borderColor,
+            backgroundColor: config.chartConfig.dataset.backgroundColor,
             showLine: false,
-            pointRadius: 5,
+            pointRadius: config.chartConfig.dataset.pointRadius,
           },
         ],
       },
@@ -403,20 +414,16 @@ export default {
       propkdScore: 0,
       mayoClass: 'low',
       errorMessage: null, // To display validation errors
-      ageRules: [
-        v => !!v || 'Age is required',
-        v => (v >= 20 && v <= 80) || 'Age must be between 20 and 80',
-      ],
       // Kidney volume variables
       rightKidneyVolume: null,
       leftKidneyVolume: null,
       totalKidneyVolume: null,
       // Disclaimer modal data
-      showModal: !localStorage.getItem('disclaimerAcknowledged'),
-      disclaimerAcknowledged: !!localStorage.getItem('disclaimerAcknowledged'),
-      acknowledgmentTime: localStorage.getItem('acknowledgmentTime') || null,
+      showModal: config.modals.disclaimerAcknowledged.show,
+      disclaimerAcknowledged: config.modals.disclaimerAcknowledged.acknowledged,
+      acknowledgmentTime: config.modals.disclaimerAcknowledged.acknowledgmentTime,
       // FAQ Modal data
-      showFAQModal: false,
+      showFAQModal: config.modals.faq.show,
     };
   },
   computed: {
@@ -463,7 +470,7 @@ export default {
       } else if (htAdjustedTKV >= this.calculateY(mayoClasses.class1B.slope, mayoClasses.class1B.intercept, patientAge)) {
         return 'class1B';
       }
-      
+
       return 'class1A'; // If none of the above, assign class 1A
     },
     calculateY(slope, intercept, x) {
@@ -484,7 +491,7 @@ export default {
     },
     calculateHtTKV() {
       if (!this.validateStep1()) {
-        console.log("Step 1 validation failed.");
+        console.log('Step 1 validation failed.');
         return;
       }
 
@@ -494,7 +501,7 @@ export default {
 
         const newDataPoint = {
           x: this.patient.age, // X-axis: Patient age
-          y: htAdjustedTKV,    // Y-axis: HtTKV
+          y: htAdjustedTKV, // Y-axis: HtTKV
           patientId: this.patient.patientId,
           mayoClass: this.patient.mayoClass,
         };
@@ -502,7 +509,7 @@ export default {
         // Update the chart data
         const clonedChartData = JSON.parse(JSON.stringify(this.chartData));
         const existingIndex = clonedChartData.datasets[0].data.findIndex(
-          point => point.patientId === this.patient.patientId
+          (point) => point.patientId === this.patient.patientId
         );
 
         if (existingIndex !== -1) {
@@ -517,7 +524,7 @@ export default {
 
         this.errorMessage = null; // Clear error message after successful calculation
       } catch (error) {
-        console.error("Error during HtTKV Calculation:", error);
+        console.error('Error during HtTKV Calculation:', error);
         this.errorMessage = error.message;
       }
     },
@@ -536,7 +543,7 @@ export default {
 
         // Check if all required inputs are provided
         if (!(rSagittalLength && rCoronalLength && rWidth && rDepth && lSagittalLength && lCoronalLength && lWidth && lDepth)) {
-          throw new Error("All fields for length, width, and depth must have valid numeric values.");
+          throw new Error('All fields for length, width, and depth must have valid numeric values.');
         }
 
         // Average lengths for right and left kidneys
@@ -544,8 +551,8 @@ export default {
         const leftLength = (lSagittalLength + lCoronalLength) / 2;
 
         // Calculate volumes using the provided formula
-        const rightKidneyVolume = Math.round(10 * (3.14159 * rightLength * rWidth * rDepth) / 6000) / 10;
-        const leftKidneyVolume = Math.round(10 * (3.14159 * leftLength * lWidth * lDepth) / 6000) / 10;
+        const rightKidneyVolume = Math.round(10 * (formulasConfig.volumeFormula.pi * rightLength * rWidth * rDepth) / formulasConfig.volumeFormula.divisor) / 10;
+        const leftKidneyVolume = Math.round(10 * (formulasConfig.volumeFormula.pi * leftLength * lWidth * lDepth) / formulasConfig.volumeFormula.divisor) / 10;
 
         // Total kidney volume
         const totalKidneyVolume = Math.round(10 * (rightKidneyVolume + leftKidneyVolume)) / 10;
@@ -559,9 +566,8 @@ export default {
         this.patient.kidneyRight.volume = this.rightKidneyVolume;
         this.patient.kidneyLeft.volume = this.leftKidneyVolume;
         this.patient.kidneyVolume = this.totalKidneyVolume;
-
       } catch (error) {
-        console.error("Error calculating kidney volumes:", error);
+        console.error('Error calculating kidney volumes:', error);
         this.errorMessage = error.message;
       }
     },
@@ -575,11 +581,11 @@ export default {
         // Use the method from the Patient class to calculate PROPKD score
         this.patient.calculatePROPKDScore();
 
-        this.propkdScore = this.patient.propkdScore;  // Update the computed PROPKD score in the Vue data
+        this.propkdScore = this.patient.propkdScore; // Update the computed PROPKD score in the Vue data
 
         this.errorMessage = null; // Clear any error messages
       } catch (error) {
-        console.error("Error during PROPKD Calculation:", error);
+        console.error('Error during PROPKD Calculation:', error);
         this.errorMessage = error.message;
       }
     },
