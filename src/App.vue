@@ -299,7 +299,7 @@
                 <v-tabs-window-item value="mayoVsPropkd">
                   <v-card outlined>
                     <v-card-text>
-                      <MayoVsPROPKDChart :mayoScore="mayoScore" :propkdScore="propkdScore" />
+                      <MayoVsPROPKDChart :mayoClass="patient.mayoClass" :propkdScore="propkdScore" />
                     </v-card-text>
                   </v-card>
                 </v-tabs-window-item>

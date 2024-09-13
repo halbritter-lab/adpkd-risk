@@ -29,9 +29,9 @@ ChartJS.register(
 
 export default {
   props: {
-    mayoScore: {
-      type: Number,
-      default: 1, // Default Mayo Score if not passed
+    mayoClass: {
+      type: String,
+      default: 'class1A', // Default Mayo Class if not passed
     },
     propkdScore: {
       type: Number,
@@ -42,17 +42,19 @@ export default {
     const canvas = ref(null);
     let chartInstance = null;
 
-    // Mapping Mayo and PROPKD scores to risk categories
-    const mayoToRisk = (mayoScore) => {
-      if (typeof mayoScore !== 'number' || mayoScore < 1 || mayoScore > 5) {
-        console.warn('Invalid Mayo Score:', mayoScore);
-        mayoScore = 1; // Default to low risk if invalid
-      }
-      if (mayoScore === 1 || mayoScore === 2) return 'low';
-      if (mayoScore === 3) return 'intermediate';
-      return 'high';
+    // Mapping Mayo class to risk categories
+    const mayoClassToRisk = (mayoClass) => {
+      const mayoClassMap = {
+        class1A: 'low',
+        class1B: 'low',
+        class1C: 'intermediate',
+        class1D: 'high',
+        class1E: 'high',
+      };
+      return mayoClassMap[mayoClass] || 'low';
     };
 
+    // Mapping PROPKD scores to risk categories
     const propkdToRisk = (propkdScore) => {
       if (typeof propkdScore !== 'number' || propkdScore < 0 || propkdScore > 9) {
         console.warn('Invalid PROPKD Score:', propkdScore);
@@ -71,7 +73,7 @@ export default {
       }
       const ctx = canvas.value.getContext('2d');
 
-      const mayoRisk = mayoToRisk(props.mayoScore);
+      const mayoRisk = mayoClassToRisk(props.mayoClass);
       const propkdRisk = propkdToRisk(props.propkdScore);
 
       const getPatientCoords = (mayoRisk, propkdRisk) => {
@@ -180,7 +182,7 @@ export default {
 
     // Watch for changes in props and update chart
     watch(
-      () => [props.mayoScore, props.propkdScore],
+      () => [props.mayoClass, props.propkdScore],
       () => {
         createChart();
       }
