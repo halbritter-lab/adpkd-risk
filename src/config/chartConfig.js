@@ -6,9 +6,9 @@ export default {
           label: 'Class 1A',
           data: [{ x: 15, y: 100 }, { x: 80, y: 100 }],
           borderColor: 'black',
-          backgroundColor: 'rgba(196, 214, 145, 0.2)',
+          backgroundColor: 'rgba(196, 214, 145, 0.6)', // Adjusted color with a higher alpha for visibility
           borderWidth: 2,
-          fill: 'origin',
+          fill: '+1',
           showLine: true,
           pointRadius: 0,
           hoverRadius: 0,
@@ -17,9 +17,9 @@ export default {
           label: 'Class 1B',
           data: [{ x: 15, y: 187.535 }, { x: 80, y: 493.599 }],
           borderColor: '#7aaa12',
-          backgroundColor: 'rgba(253, 253, 131, 0.2)',
+          backgroundColor: 'rgba(253, 253, 131, 0.2)', // Adjusted fill color for Class 1B
           borderWidth: 2,
-          fill: '1',
+          fill: '+1',
           showLine: true,
           pointRadius: 0,
           hoverRadius: 0,
@@ -28,9 +28,9 @@ export default {
           label: 'Class 1C',
           data: [{ x: 15, y: 233.695 }, { x: 80, y: 1596.134 }],
           borderColor: '#ccff99',
-          backgroundColor: 'rgba(255, 217, 163, 0.2)',
+          backgroundColor: 'rgba(255, 217, 163, 0.6)', // Adjusted fill color for Class 1C
           borderWidth: 2,
-          fill: '1',
+          fill: '+1',
           showLine: true,
           pointRadius: 0,
           hoverRadius: 0,
@@ -39,9 +39,9 @@ export default {
           label: 'Class 1D',
           data: [{ x: 15, y: 290.292 }, { x: 80, y: 5074.514 }],
           borderColor: '#ffc000',
-          backgroundColor: 'rgba(255, 224, 204, 0.2)',
+          backgroundColor: 'rgba(255, 224, 204, 0.6)', // Adjusted fill color for Class 1D
           borderWidth: 2,
-          fill: '1',
+          fill: '+1',
           showLine: true,
           pointRadius: 0,
           hoverRadius: 0,
@@ -50,12 +50,23 @@ export default {
           label: 'Class 1E',
           data: [{ x: 15, y: 359.484 }, { x: 80, y: 15869.399 }],
           borderColor: '#ff6600',
-          backgroundColor: 'rgba(252, 139, 136, 0.2)',
+          backgroundColor: 'rgba(252, 139, 136, 0.6)', // Adjusted fill color for Class 1E
           borderWidth: 2,
-          fill: '1',
+          fill: '+1',  // Fills above the Class 1E line
           showLine: true,
           pointRadius: 0,
           hoverRadius: 0,
+        },
+        // Invisible 'Ceiling' dataset to fill the area above Class 1E
+        {
+          label: 'Ceiling',
+          data: Array.from({ length: 61 }, (_, i) => ({ x: 20 + i, y: 20000 })), // Adjust y to the maximum expected value
+          borderColor: 'transparent',
+          borderWidth: 0,
+          showLine: true,
+          pointRadius: 0,
+          fill: '+1',
+          backgroundColor: 'rgba(252, 139, 136, 0.6)', // Fill color for the area above Class 1E
         },
       ],
       options: {
