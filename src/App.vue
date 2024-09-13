@@ -347,6 +347,55 @@
           </v-col>
         </v-row>
 
+        <!-- Acknowledgment message -->
+        <v-alert
+          v-if="disclaimerAcknowledged && !showModal"
+          type="info"
+          dismissible
+          aria-live="polite"
+          class="disclaimer-acknowledgment"
+        >
+          <div class="disclaimer-content">
+            <v-btn small outlined @click="reopenModal" class="small-btn" density="compact">Disclaimer acknowledged: {{ acknowledgmentTime }}</v-btn>
+          </div>
+        </v-alert>
+
+        <!-- Modal for Disclaimer -->
+        <v-dialog v-model="showModal" persistent max-width="500">
+          <v-card>
+            <v-card-title>Disclaimer</v-card-title>
+            <v-card-text>
+              <section v-for="(section, index) in disclaimerSections" :key="index">
+                <h3>{{ section.title }}</h3>
+                <p v-html="section.content"></p>
+              </section>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="closeModal">I Acknowledge</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <!-- Modal for FAQ -->
+        <v-dialog v-model="showFAQModal" persistent max-width="600">
+          <v-card>
+            <v-card-title>Frequently Asked Questions (FAQ)</v-card-title>
+            <v-card-text>
+              <ul>
+                <li v-for="(faq, index) in faqContent" :key="index">
+                  <h4>{{ faq.question }}</h4>
+                  <p>{{ faq.answer }}</p>
+                </li>
+              </ul>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="closeFAQ">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
         <!-- Alert for missing data -->
         <v-alert v-if="errorMessage" type="error" outlined class="mt-3" aria-live="assertive">
           {{ errorMessage }}
