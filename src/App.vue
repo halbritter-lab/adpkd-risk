@@ -29,7 +29,7 @@
               </v-card-title>
               <v-card-text class="pa-1">
                 <v-row dense>
-                  <v-col cols="12" sm="2" md="2">
+                  <v-col cols="12" sm="3" md="3">
                     <v-text-field
                       v-model="patient.patientId"
                       label="Patient ID"
@@ -40,7 +40,7 @@
                       aria-label="Patient ID"
                     />
                   </v-col>
-                  <v-col cols="12" sm="2" md="2">
+                  <v-col cols="12" sm="3" md="3">
                     <v-text-field
                       v-model="patient.age"
                       label="Age"
@@ -53,7 +53,7 @@
                       aria-label="Patient Age"
                     />
                   </v-col>
-                  <v-col cols="12" sm="2" md="2">
+                  <v-col cols="12" sm="3" md="3">
                     <v-text-field
                       v-model="patient.height"
                       label="Height (m)"
@@ -68,7 +68,7 @@
                       aria-label="Patient Height"
                     />
                   </v-col>
-                  <v-col cols="12" sm="2" md="2">
+                  <v-col cols="12" sm="3" md="3">
                     <v-select
                       v-model="patient.sex"
                       :items="['Male', 'Female']"
@@ -78,28 +78,6 @@
                       outlined
                       density="compact"
                       aria-label="Patient Sex"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="2" md="2">
-                    <v-select
-                      v-model="patient.familyHistory"
-                      :items="['Positive', 'Negative']"
-                      label="Family History"
-                      dense
-                      outlined
-                      density="compact"
-                      aria-label="Family History"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="2" md="2">
-                    <v-select
-                      v-model="patient.ethnicity"
-                      :items="config.ethnicityOptions"
-                      label="Ethnicity"
-                      dense
-                      outlined
-                      density="compact"
-                      aria-label="Ethnicity"
                     />
                   </v-col>
                 </v-row>
