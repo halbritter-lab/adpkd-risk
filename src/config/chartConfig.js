@@ -103,6 +103,45 @@ export default {
         },
       },
     },
+    propkdChart: {
+      lowRiskColor: {
+        backgroundColor: '#ffe599',
+        borderColor: '#ccc',
+        borderWidth: '1px',
+      },
+      intermediateRiskColor: {
+        backgroundColor: '#f4b183',
+        borderColor: '#ccc',
+        borderWidth: '1px',
+      },
+      highRiskColor: {
+        backgroundColor: '#e06666',
+        borderColor: '#ccc',
+        color: 'white',
+        borderWidth: '1px',
+      },
+      highlightColor: {
+        backgroundColor: '#ffeb3b',
+        borderColor: '#000',
+        color: '#000',
+        borderWidth: '2px',
+        fontWeight: 'bold',
+      },
+      gridCellMaxWidth: '100px',
+      // Refactor scoreGrid to move it here
+      scoreGrid: [
+        { value: 0, label: 'LOW', description: '70.6 median age for ESRD onset' },
+        { value: 1, label: 'LOW', description: '70.6 median age for ESRD onset' },
+        { value: 2, label: 'LOW', description: '70.6 median age for ESRD onset' },
+        { value: 3, label: 'LOW', description: '70.6 median age for ESRD onset' },
+        { value: 4, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
+        { value: 5, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
+        { value: 6, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
+        { value: 7, label: 'HIGH', description: '49 median age for ESRD onset' },
+        { value: 8, label: 'HIGH', description: '49 median age for ESRD onset' },
+        { value: 9, label: 'HIGH', description: '49 median age for ESRD onset' },
+      ],
+    },
     // Placeholder for other chart types, like barChart, pieChart, etc.
     barChart: {
       options: {

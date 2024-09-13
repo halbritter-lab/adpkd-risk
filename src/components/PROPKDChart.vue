@@ -3,7 +3,7 @@
     <v-col
       v-for="cell in scoreGrid"
       :key="cell.value"
-      :class="['pa-4', getCellStyle(cell)]"
+      :style="getCellStyle(cell)"
       class="grid-cell"
       cols="1"
     >
@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import chartConfig from '../config/chartConfig.js'; // Import chartConfig
+
 export default {
   props: {
     score: {
@@ -27,32 +29,45 @@ export default {
   },
   data() {
     return {
-      scoreGrid: [
-        { value: 0, label: 'LOW', description: '70.6 median age for ESRD onset' },
-        { value: 1, label: 'LOW', description: '70.6 median age for ESRD onset' },
-        { value: 2, label: 'LOW', description: '70.6 median age for ESRD onset' },
-        { value: 3, label: 'LOW', description: '70.6 median age for ESRD onset' },
-        { value: 4, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
-        { value: 5, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
-        { value: 6, label: 'INTERMEDIATE', description: '56.9 median age for ESRD onset' },
-        { value: 7, label: 'HIGH', description: '49 median age for ESRD onset' },
-        { value: 8, label: 'HIGH', description: '49 median age for ESRD onset' },
-        { value: 9, label: 'HIGH', description: '49 median age for ESRD onset' },
-      ],
+      // Load the scoreGrid from the configuration
+      scoreGrid: chartConfig.propkdChart.scoreGrid,
     };
   },
   methods: {
     getCellStyle(cell) {
       if (cell.value === this.score) {
-        return 'highlight-cell';  // Highlight the cell with the current score
+        return {
+          backgroundColor: chartConfig.propkdChart.highlightColor.backgroundColor,
+          borderColor: chartConfig.propkdChart.highlightColor.borderColor,
+          borderWidth: chartConfig.propkdChart.highlightColor.borderWidth,
+          borderStyle: 'solid',
+          color: chartConfig.propkdChart.highlightColor.color,
+          fontWeight: chartConfig.propkdChart.highlightColor.fontWeight,
+        };
       } else if (cell.value <= 3) {
-        return 'low-risk';
+        return {
+          backgroundColor: chartConfig.propkdChart.lowRiskColor.backgroundColor,
+          borderColor: chartConfig.propkdChart.lowRiskColor.borderColor,
+          borderWidth: chartConfig.propkdChart.lowRiskColor.borderWidth,
+          borderStyle: 'solid',
+        };
       } else if (cell.value >= 4 && cell.value <= 6) {
-        return 'intermediate-risk';
+        return {
+          backgroundColor: chartConfig.propkdChart.intermediateRiskColor.backgroundColor,
+          borderColor: chartConfig.propkdChart.intermediateRiskColor.borderColor,
+          borderWidth: chartConfig.propkdChart.intermediateRiskColor.borderWidth,
+          borderStyle: 'solid',
+        };
       } else {
-        return 'high-risk';
+        return {
+          backgroundColor: chartConfig.propkdChart.highRiskColor.backgroundColor,
+          borderColor: chartConfig.propkdChart.highRiskColor.borderColor,
+          borderWidth: chartConfig.propkdChart.highRiskColor.borderWidth,
+          borderStyle: 'solid',
+          color: chartConfig.propkdChart.highRiskColor.color,
+        };
       }
-    }
+    },
   },
 };
 </script>
@@ -62,41 +77,17 @@ export default {
   flex-grow: 1;
   flex-basis: 0;
   max-width: 100%;
+  width: 100%;
+  max-width: 100px;
+  text-align: center;
+  min-height: 60px; /* Set a minimum height for cells */
+  display: flex;
+  align-items: center; /* Vertically center the content */
+  justify-content: center; /* Horizontally center the content */
 }
 
-/* Ensures grid stretches fully */
 .v-row {
   display: flex;
   justify-content: center;
-}
-
-.low-risk {
-  background-color: #ffe599;
-  border: 1px solid #ccc;
-}
-
-.intermediate-risk {
-  background-color: #f4b183;
-  border: 1px solid #ccc;
-}
-
-.high-risk {
-  background-color: #e06666;
-  border: 1px solid #ccc;
-  color: white;
-}
-
-.highlight-cell {
-  background-color: #ffeb3b !important; /* Highlight the active cell */
-  border: 2px solid #000;
-  color: #000;
-  font-weight: bold;
-}
-
-/* Make sure the grid cells are responsive */
-.grid-cell {
-  width: 100%;
-  max-width: 100px; /* Adjust this value based on the size you want for each cell */
-  text-align: center;
 }
 </style>
