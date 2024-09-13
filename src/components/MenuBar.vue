@@ -39,10 +39,21 @@
         How to Use & FAQ
       </v-tooltip>
     </v-btn>
+
+    <!-- Print as PDF Button -->
+    <v-btn icon @click="printAsPDF" aria-label="Print as PDF">
+      <v-icon>mdi-printer</v-icon>
+      <v-tooltip activator="parent" location="bottom">
+        Print as PDF
+      </v-tooltip>
+    </v-btn>
   </v-app-bar>
 </template>
 
 <script>
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
 export default {
   props: {
     version: String,
@@ -59,6 +70,30 @@ export default {
     },
     openFAQ() {
       this.$emit('open-faq');
+    },
+    async printAsPDF() {
+      try {
+        const appElement = document.querySelector('#app-content'); // Updated to target 'app-content'
+
+        if (!appElement) {
+          console.error('App content element not found');
+          return;
+        }
+
+        const canvas = await html2canvas(appElement, {
+          scale: 2,
+        });
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgData = canvas.toDataURL('image/png');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save('ADPKD_Risk_Report.pdf');
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+      }
     }
   }
 };

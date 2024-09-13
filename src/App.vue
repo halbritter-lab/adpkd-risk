@@ -10,6 +10,7 @@
       @open-faq="openFAQ"
     />
 
+    <div id="app-content">
     <v-main>
       <v-container>
         <!-- Step 1: Individual Information Section -->
@@ -352,6 +353,7 @@
         </v-alert>
       </v-container>
     </v-main>
+    </div>
   </v-app>
 </template>
 
