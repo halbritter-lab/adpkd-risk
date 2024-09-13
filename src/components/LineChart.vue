@@ -1,5 +1,5 @@
 <template>
-  <div style="position: relative;">
+  <div style="position: relative;" class="chart-container">
     <canvas ref="canvas"></canvas>
     <!-- Download button in the top-right corner -->
     <v-btn
@@ -8,7 +8,6 @@
       icon
       color="primary"
       style="position: absolute; top: 0px; right: 0px; z-index: 5;"
-
       @click="downloadChart"
       aria-label="Download Chart as PNG"
     >

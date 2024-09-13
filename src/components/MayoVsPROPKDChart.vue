@@ -229,8 +229,8 @@ export default {
 
 <style scoped>
 canvas {
-  width: 70% !important;
-  height: 70% !important;
+  width: 50% !important;
+  height: 50% !important;
   margin: 0 auto;
 }
 </style>
