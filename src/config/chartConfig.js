@@ -17,7 +17,7 @@ export default {
           label: 'Class 1B',
           data: [{ x: 15, y: 187.535 }, { x: 80, y: 493.599 }],
           borderColor: '#7aaa12',
-          backgroundColor: 'rgba(253, 253, 131, 0.2)', // Adjusted fill color for Class 1B
+          backgroundColor: 'rgba(216, 253, 131, 0.6)', // Adjusted fill color for Class 1B
           borderWidth: 2,
           fill: '+1',
           showLine: true,
@@ -39,7 +39,7 @@ export default {
           label: 'Class 1D',
           data: [{ x: 15, y: 290.292 }, { x: 80, y: 5074.514 }],
           borderColor: '#ffc000',
-          backgroundColor: 'rgba(255, 224, 204, 0.6)', // Adjusted fill color for Class 1D
+          backgroundColor: 'rgba(255, 187, 153, 0.6)', // Adjusted fill color for Class 1D
           borderWidth: 2,
           fill: '+1',
           showLine: true,
