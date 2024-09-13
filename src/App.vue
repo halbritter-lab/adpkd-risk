@@ -497,11 +497,14 @@ export default {
 
       try {
         // Pass the Mayo class calculator method and patient age when calculating HtTKV
-        const htAdjustedTKV = this.patient.calculateHtTKV((htk) => this.getMayoClass(htk, this.patient.age));
+        let htAdjustedTKV = this.patient.calculateHtTKV((htk) => this.getMayoClass(htk, this.patient.age));
+
+        // Round htAdjustedTKV to a maximum of 2 decimal places
+        htAdjustedTKV = Math.round(htAdjustedTKV * 100) / 100;
 
         const newDataPoint = {
           x: this.patient.age, // X-axis: Patient age
-          y: htAdjustedTKV, // Y-axis: HtTKV
+          y: htAdjustedTKV,    // Y-axis: HtTKV
           patientId: this.patient.patientId,
           mayoClass: this.patient.mayoClass,
         };

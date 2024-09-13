@@ -145,7 +145,7 @@ export default {
                 label: function (context) {
                   const point = context.raw;
                   // Access mayoClass from point data, which you passed from App.vue
-                  return `Patient ID: ${point.patientId}, Age: ${point.x}, Volume: ${point.y}, Mayo Class: ${point.mayoClass}`;
+                  return `Patient ID: ${point.patientId}, Age: ${point.x}, HtTKV: ${point.y}, Mayo: ${point.mayoClass}`;
                 },
               },
               mode: 'nearest',
