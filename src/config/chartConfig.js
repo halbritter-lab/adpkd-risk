@@ -6,7 +6,7 @@ export default {
           label: 'Class 1A',
           data: [{ x: 15, y: 100 }, { x: 80, y: 100 }],
           borderColor: 'black',
-          backgroundColor: 'rgba(196, 214, 145, 0.6)', // Adjusted color with a higher alpha for visibility
+          backgroundColor: 'rgba(196, 214, 145, 0.5)', // Adjusted color with a higher alpha for visibility
           borderWidth: 2,
           fill: '+1',
           showLine: true,
@@ -17,7 +17,7 @@ export default {
           label: 'Class 1B',
           data: [{ x: 15, y: 187.535 }, { x: 80, y: 493.599 }],
           borderColor: '#7aaa12',
-          backgroundColor: 'rgba(216, 253, 131, 0.6)', // Adjusted fill color for Class 1B
+          backgroundColor: 'rgba(216, 253, 131, 0.5)', // Adjusted fill color for Class 1B
           borderWidth: 2,
           fill: '+1',
           showLine: true,
@@ -27,8 +27,8 @@ export default {
         {
           label: 'Class 1C',
           data: [{ x: 15, y: 233.695 }, { x: 80, y: 1596.134 }],
-          borderColor: '#ccff99',
-          backgroundColor: 'rgba(255, 217, 163, 0.6)', // Adjusted fill color for Class 1C
+          borderColor: '#abdb6b',
+          backgroundColor: 'rgba(255, 217, 163, 0.5)', // Adjusted fill color for Class 1C
           borderWidth: 2,
           fill: '+1',
           showLine: true,
@@ -39,7 +39,7 @@ export default {
           label: 'Class 1D',
           data: [{ x: 15, y: 290.292 }, { x: 80, y: 5074.514 }],
           borderColor: '#ffc000',
-          backgroundColor: 'rgba(255, 187, 153, 0.6)', // Adjusted fill color for Class 1D
+          backgroundColor: 'rgba(255, 187, 153, 0.5)', // Adjusted fill color for Class 1D
           borderWidth: 2,
           fill: '+1',
           showLine: true,
@@ -50,7 +50,7 @@ export default {
           label: 'Class 1E',
           data: [{ x: 15, y: 359.484 }, { x: 80, y: 15869.399 }],
           borderColor: '#ff6600',
-          backgroundColor: 'rgba(252, 139, 136, 0.6)', // Adjusted fill color for Class 1E
+          backgroundColor: 'rgba(252, 139, 136, 0.5)', // Adjusted fill color for Class 1E
           borderWidth: 2,
           fill: '+1',  // Fills above the Class 1E line
           showLine: true,
@@ -66,7 +66,7 @@ export default {
           showLine: true,
           pointRadius: 0,
           fill: '+1',
-          backgroundColor: 'rgba(252, 139, 136, 0.6)', // Fill color for the area above Class 1E
+          backgroundColor: 'rgba(252, 139, 136, 0.5)', // Fill color for the area above Class 1E
         },
       ],
       options: {
