@@ -25,6 +25,9 @@
                     aria-hidden="true"
                     >mdi-numeric-1-circle-outline</v-icon
                   >
+                  <v-tooltip activator="parent" location="top">
+                    Enter the basic information for the individual needed to calculate the Mayo and PROPKD scores.
+                  </v-tooltip>
                   <span aria-label="Patient Information Section">Individual</span>
                 </span>
               </v-card-title>
@@ -99,6 +102,9 @@
                     aria-hidden="true"
                     >mdi-numeric-2-circle-outline</v-icon
                   >
+                  <v-tooltip activator="parent" location="top">
+                    Enter the kidney measurements to calculate the Mayo score. If you have the total kidney volume, select the input method accordingly.
+                  </v-tooltip>
                   <span aria-label="Mayo Score Section">Mayo</span>
                 </span>
                 <v-select
@@ -253,7 +259,7 @@
               </v-card-text>
             </v-card>
 
-            <!-- PROPKD Score Section -->
+            <!-- Step 3: PROPKD Score Section -->
             <v-card class="small-card pa-1" outlined>
               <v-card-title class="d-flex justify-space-between">
                 <span>
@@ -263,6 +269,9 @@
                     aria-hidden="true"
                     >mdi-numeric-3-circle-outline</v-icon
                   >
+                  <v-tooltip activator="parent" location="top">
+                    Enter the mutation class and check if the patient had hypertension or first urological event before age 35 to calculate the PROPKD score.
+                  </v-tooltip>
                   <span aria-label="PROPKD Score Section">PROPKD</span>
                 </span>
                 <v-btn small color="primary" @click="calculatePROPKDScore" density="compact" aria-label="Calculate PROPKD Score">
