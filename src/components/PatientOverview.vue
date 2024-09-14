@@ -2,6 +2,19 @@
   <v-card outlined class="pa-2">
     <v-card-title>
       <span>Overview</span>
+      <!-- Add export button -->
+      <v-btn
+        small
+        density="compact"
+        icon @click="exportAsExcel"
+        aria-label="Export as Excel"
+        style="margin-left: 16px;"
+      >
+        <v-icon>mdi-file-excel</v-icon>
+        <v-tooltip activator="parent" location="bottom">
+          Export as Excel
+        </v-tooltip>
+      </v-btn>
     </v-card-title>
     <v-card-text>
       <v-table dense>
@@ -26,6 +39,9 @@
 </template>
 
 <script>
+// Import the XLSX library
+import * as XLSX from 'xlsx';
+
 export default {
   props: {
     patient: {
@@ -47,5 +63,35 @@ export default {
       }),
     },
   },
+  methods: {
+    exportAsExcel() {
+      // Prepare data for Excel export
+      const data = [
+        {
+          'Patient ID': this.patient.patientId,
+          Age: this.patient.age,
+          Height: this.patient.height,
+          'Mayo Class': this.patient.mayoClass,
+          'PROPKD Score': this.patient.propkdScore,
+        },
+      ];
+
+      // Create a new workbook and worksheet
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(data);
+
+      // Append the worksheet to the workbook
+      XLSX.utils.book_append_sheet(wb, ws, 'Patient Data');
+
+      // Export the workbook as an Excel file
+      XLSX.writeFile(wb, `patient_data_${new Date().toISOString()}.xlsx`);
+    },
+  },
 };
 </script>
+
+<style scoped>
+.ml-auto {
+  margin-left: auto;
+}
+</style>
