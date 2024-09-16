@@ -364,8 +364,11 @@
           aria-live="polite"
           class="disclaimer-acknowledgment"
         >
-          <div class="disclaimer-content">
-            <v-btn small outlined @click="reopenModal" class="small-btn" density="compact">Disclaimer acknowledged: {{ acknowledgmentTime }}</v-btn>
+          <div class="disclaimer-content mx-0">
+            <v-btn small outlined @click="reopenModal" class="small-btn mx-0" density="compact"> Disclaimer </v-btn>
+            <v-tooltip activator="parent" location="left">
+             acknowledged: {{ acknowledgmentTime }}
+            </v-tooltip>
           </div>
         </v-alert>
 
@@ -409,6 +412,9 @@
         <v-alert v-if="errorMessage" type="error" outlined class="mt-3" aria-live="assertive">
           {{ errorMessage }}
         </v-alert>
+
+        <FooterLogos />
+
       </v-container>
     </v-main>
     </div>
@@ -420,6 +426,7 @@ import config from './config/appConfig.js'; // Import the config file
 import formulasConfig from './config/formulasConfig.js';
 import packageInfo from '../package.json'; // Import the package.json file
 import MenuBar from './components/MenuBar.vue';
+import FooterLogos from './components/FooterLogos.vue';
 import LineChart from './components/LineChart.vue';
 import PROPKDChart from './components/PROPKDChart.vue';
 import MayoVsPROPKDChart from './components/MayoVsPROPKDChart.vue';
@@ -428,7 +435,7 @@ import Patient from './models/Patient'; // Import the Patient class
 import TextMixin from './mixins/TextMixin.js'; // Import the TextMixin
 
 export default {
-  components: { MenuBar, LineChart, PROPKDChart, MayoVsPROPKDChart, PatientOverview },
+  components: { MenuBar, LineChart, PROPKDChart, MayoVsPROPKDChart, PatientOverview, FooterLogos },
   mixins: [TextMixin], // Integrating the TextMixin
   data() {
     return {
@@ -736,7 +743,7 @@ export default {
   right: 0;
   width: auto;
   max-width: 250px; /* Smaller width to make it more compact */
-  z-index: 1000;
+  z-index: 1005;
   padding: 2px;
   font-size: 8px; /* Reduced font size for smaller text */
 }
