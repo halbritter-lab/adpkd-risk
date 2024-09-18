@@ -4,7 +4,7 @@
 
 The **ADPKD Risk Calculator** is a web-based tool developed to estimate the progression risk for patients with Autosomal Dominant Polycystic Kidney Disease (ADPKD) by combining two major scoring systems: the **Mayo Imaging Classification** (MIC) and the **PROPKD Score**. 
 
-This application enables clinicians and researchers to assess both kidney volume and genetic/clinical risk factors, helping to stratify patients based on the severity of their disease.
+This application enables clinicians and researchers to assess both kidney volume and genetic/clinical risk factors, helping to stratify patients based on the severity of their disease. Please explore the **[ADPKD-Risk](https://halbritter-lab.github.io/adpkd-risk/) Web Application** hosted on GitHub pages and build with bookdown.
 
 ## Features
 
