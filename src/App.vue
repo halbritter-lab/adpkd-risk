@@ -264,7 +264,7 @@
               <v-card-title class="d-flex justify-space-between">
                 <span>
                   <v-icon
-                    :color="isPROPKDScoreCalculated ? config.validationIconColors.valid : config.validationIconColors.invalid"
+                    :color="(isPROPKDScoreCalculated && this.patient.sex && this.patient.mutationClass) ? config.validationIconColors.valid : config.validationIconColors.invalid"
                     class="mr-2"
                     aria-hidden="true"
                     >mdi-numeric-3-circle-outline</v-icon
@@ -483,7 +483,7 @@ export default {
       return this.patient.mayoScore > 1;
     },
     isPROPKDScoreCalculated() {
-      return this.patient.propkdScore > 0;
+      return this.patient.propkdScore >= 0;
     },
   },
   methods: {
