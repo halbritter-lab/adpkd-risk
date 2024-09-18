@@ -329,7 +329,7 @@
                   <v-card class="equal-height-card pa-1 mb-2" outlined>
                     <v-card-text class="pa-1">
                       <div class="chart-container">
-                        <LineChart :chartData="chartData" />
+                        <LineChart :chartData="chartData" :propkdRiskLevel="propkdRiskLevel" />
                       </div>
                     </v-card-text>
                   </v-card>
@@ -472,6 +472,7 @@ export default {
       acknowledgmentTime: config.modals.disclaimerAcknowledged.acknowledgmentTime,
       // FAQ Modal data
       showFAQModal: config.modals.faq.show,
+      propkdRiskLevel: 'default'
     };
   },
   computed: {
@@ -633,6 +634,17 @@ export default {
         this.patient.calculatePROPKDScore();
 
         this.propkdScore = this.patient.propkdScore; // Update the computed PROPKD score in the Vue data
+
+        // assign the risk level based on the computed PROPKD score
+        if (this.patient.propkdScore >= 7) {
+          this.propkdRiskLevel = 'highRisk';
+        } 
+        else if (this.patient.propkdScore < 4) {
+          this.propkdRiskLevel = 'lowRisk';
+        } 
+        else {
+          this.propkdRiskLevel = 'default';
+        }
 
         this.errorMessage = null; // Clear any error messages
       } catch (error) {

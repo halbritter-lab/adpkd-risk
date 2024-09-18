@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import {
   Chart as ChartJS,
   ScatterController,
@@ -29,7 +29,6 @@ import {
   LinearScale,
   LogarithmicScale,
   CategoryScale,
-  Title,
   Tooltip,
   Legend,
   Filler,
@@ -43,7 +42,6 @@ ChartJS.register(
   LinearScale,
   LogarithmicScale,
   CategoryScale,
-  Title,
   Tooltip,
   Legend,
   Filler
@@ -52,29 +50,48 @@ ChartJS.register(
 export default {
   props: {
     chartData: Object,
+    propkdRiskLevel: String, // Add a prop for PROPKD risk level (low or high)
   },
   setup(props) {
     const canvas = ref(null);
     let chartInstance = null;
 
+    // Function to create the chart
     const createChart = () => {
       const ctx = canvas.value.getContext('2d');
+
+      // Default to the 'default' scheme if propkdRiskLevel is not 'lowRisk' or 'highRisk'
+      const riskScheme = chartConfig.lineChart.propkdRiskSchemes[props.propkdRiskLevel] || chartConfig.lineChart.propkdRiskSchemes.default;
+
+      // Update the classification data with the appropriate color scheme
+      const classificationData = chartConfig.lineChart.classificationData.map((classData) => {
+        const classKey = classData.label.split(' ')[1]; // e.g., "Class 1A" -> "1A"
+        return {
+          ...classData,
+          backgroundColor: riskScheme[`class${classKey}`]?.backgroundColor || classData.backgroundColor,
+          borderColor: riskScheme[`class${classKey}`]?.borderColor || classData.borderColor,
+        };
+      });
+
+      // Initialize the chart
       chartInstance = new ChartJS(ctx, {
         type: 'scatter',
         data: {
           ...props.chartData,
-          datasets: [...props.chartData.datasets, ...chartConfig.lineChart.classificationData],
+          datasets: [...props.chartData.datasets, ...classificationData],
         },
         options: chartConfig.lineChart.options,
       });
     };
 
-    const resizeChart = () => {
+    // Function to destroy the chart
+    const destroyChart = () => {
       if (chartInstance) {
-        chartInstance.resize();
+        chartInstance.destroy();
       }
     };
 
+    // Function to download the chart as PNG
     const downloadChart = () => {
       if (canvas.value) {
         const link = document.createElement('a');
@@ -84,6 +101,16 @@ export default {
       }
     };
 
+    // Watch for changes to propkdRiskLevel to update the chart
+    watch(
+      () => props.propkdRiskLevel,
+      (newRiskLevel) => {
+        destroyChart(); // Destroy the existing chart instance
+        createChart(); // Recreate the chart with the updated risk level
+      }
+    );
+
+    // Watch for changes in chartData to update the chart data
     watch(
       () => props.chartData,
       (newData) => {
@@ -98,15 +125,12 @@ export default {
       { deep: true }
     );
 
+    // Create chart on mount
     onMounted(() => {
       createChart();
-      window.addEventListener('resize', resizeChart);
     });
 
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', resizeChart);
-    });
-
+    // Return the necessary refs and functions
     return {
       canvas,
       downloadChart,
