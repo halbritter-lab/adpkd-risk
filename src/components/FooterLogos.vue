@@ -16,13 +16,13 @@ export default {
         {
           name: 'CeRKiD',
           url: 'https://nephrologie-intensivmedizin.charite.de/fuer_patienten/cerkid/',
-          logo: '/CeRKiD_175x130.jpg',
+          logo: 'CeRKiD_175x130.jpg',
           alt: 'CeRKiD Logo',
         },
         {
           name: 'DFG',
           url: 'https://www.dfg.de/en/',
-          logo: '/dfg_logo_schriftzug_schwarz_foerderung_en.gif',
+          logo: 'dfg_logo_schriftzug_schwarz_foerderung_en.gif',
           alt: 'DFG Logo',
         },
       ],
